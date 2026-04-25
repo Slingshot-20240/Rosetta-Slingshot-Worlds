@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -12,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import dev.nextftc.hardware.impl.IMUExKt;
 
 
 public class AprilTagLimelight {
@@ -32,58 +35,25 @@ public class AprilTagLimelight {
                 limelight.getStatus().getPipelineIndex())
         );
     }
-    public ObeliskLocation getObelisk(){
-        return Stream.of(limelight.getLatestResult().getFiducialResults()).map((a)->(FiducialResult)a).filter(Objects::nonNull).map(FiducialResult::getFiducialId).map(ObeliskLocation::fromInt).filter(Objects::nonNull).findFirst().orElse(null);
-    }
-
-    /*
-    note that the imu value will make it more accurate (but only if there is imu).
-    imu is 0 when blue alliance is on the left (and red is on the right)
-
-    default value is null
-    */
-    public Pose2D getBotPose(){
+    public double getDistance(IMU imu){
+        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        limelight.updateRobotOrientation(robotYaw);
         LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
-            return new Pose2D(DistanceUnit.CM,
-                              result.getBotpose().getPosition().toUnit(DistanceUnit.CM).x,
-                              result.getBotpose().getPosition().toUnit(DistanceUnit.CM).y,
-                              AngleUnit.RADIANS,
-                              result.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS));
-        }
-        return null;
-    }
-    public Pose2D getBotPose(double yaw) {
-
-        LLResult result = limelight.getLatestResult();
-
-        limelight.updateRobotOrientation(yaw-270);
-        if (result != null && result.isValid()) {
-            return new Pose2D(DistanceUnit.CM,
-                    result.getBotpose().getPosition().toUnit(DistanceUnit.CM).x,
-                    result.getBotpose().getPosition().toUnit(DistanceUnit.CM).y,
-                    AngleUnit.DEGREES,
-                    result.getBotpose().getOrientation().getYaw(AngleUnit.DEGREES));
-        }
-        return null;
-    }
-
-    public double getDistance(){
-        for(FiducialResult result : limelight.getLatestResult().getFiducialResults())
-        {
-            if(correctAT(result.getFiducialId())){ //distance formula i think this works
-                return Math.sqrt(Math.pow(result.getRobotPoseTargetSpace().getPosition().y, 2) +
-                                 Math.pow(result.getRobotPoseTargetSpace().getPosition().x,2));
-            }
+        if(result != null && result.isValid()){
+            FiducialResult fresult = result.getFiducialResults().get(0);
+            return Math.sqrt(Math.pow(fresult.getRobotPoseTargetSpace().getPosition().y, 2) +
+                    Math.pow(fresult.getRobotPoseTargetSpace().getPosition().x,2));
         }
         return 0.0;
     }
-    public double getAngle(){
-        for(FiducialResult result : limelight.getLatestResult().getFiducialResults())
-        {
-            if(correctAT(result.getFiducialId())){
-                return result.getTargetXDegrees();
-            }
+    public double getAngle(IMU imu){
+        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        limelight.updateRobotOrientation(robotYaw);
+        LLResult result = limelight.getLatestResult();
+        if(result != null && result.isValid()){
+            FiducialResult fresult = result.getFiducialResults().get(0);
+            return fresult.getTargetXDegrees();
+
         }
         return 0.0;
     }
