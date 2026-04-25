@@ -17,22 +17,22 @@ public class Intakenf implements Subsystem {
 
     private Intakenf() { }
 
-    public MotorEx intake1;
+    public MotorEx transfer;
     public MotorEx dropDownIntake;
     MotorGroup intake;
 
     // Beam break sensors
     public DigitalChannel beamBreakFront; // front of intake - triggers pivot up + stops all intake
-    public DigitalChannel beamBreakMid;   // middle - available for future use
     public DigitalChannel beamBreakTop;   // top - stops transfer, dropdown keeps running
+
+    // Ball count trigger
+    public boolean hasBall = false; // true when 3rd (last) ball is detected at top
 
     // Pivot servo
     public ServoEx pivotServo;
-    public static final double PIVOT_UP   = 1.0;
-    public static final double PIVOT_DOWN = 0.0;
 
 //-------------------------------------------------------------------------------
-// Original commands
+
 
     public Command in() {
         return new SetPower(intake, 0.9);
@@ -48,32 +48,21 @@ public class Intakenf implements Subsystem {
         return new SetPower(intake, power);
     }
 
-//-------------------------------------------------------------------------------
-// Pivot servo functions
-    /** Pivots the servo up (ball loaded position) */
     public Command pivotUp() {
-        return new SetPosition(pivotServo, PIVOT_UP);
+        return new SetPosition(pivotServo, 1.0);
     }
 
-    /** Pivots the servo down (intaking position) */
     public Command pivotDown() {
-        return new SetPosition(pivotServo, PIVOT_DOWN);
+        return new SetPosition(pivotServo, 0);
     }
 
 //-------------------------------------------------------------------------------
 // Beam break sensor helpers
 
-    /** Returns true when the front beam break detects a ball */
     public boolean isFrontBeamBreakTriggered() {
         return beamBreakFront != null && !beamBreakFront.getState();
     }
 
-    /** Returns true when the middle beam break detects a ball */
-    public boolean isMidBeamBreakTriggered() {
-        return beamBreakMid != null && !beamBreakMid.getState();
-    }
-
-    /** Returns true when the top beam break detects a ball */
     public boolean isTopBeamBreakTriggered() {
         return beamBreakTop != null && !beamBreakTop.getState();
     }
@@ -85,14 +74,19 @@ public class Intakenf implements Subsystem {
      * Returns the number of balls currently detected inside the robot.
      *
      * beamBreakFront = ball entering intake (stage 1)
-     * beamBreakMid   = ball in transfer   (stage 2)
-     * beamBreakTop   = ball at top        (stage 3)
+     * beamBreakTop   = ball at top         (stage 2 / final)
+     *
+     * hasBall is set to true when count reaches 3 (top beam break triggered
+     * while front beam break is also triggered, indicating robot is full).
      */
     public int getCount() {
         int count = 0;
         if (isFrontBeamBreakTriggered()) count++;
-        if (isMidBeamBreakTriggered())   count++;
         if (isTopBeamBreakTriggered())   count++;
+
+        // hasBall triggers true when the last (3rd) ball reaches the top
+        hasBall = (count >= 2);
+
         return count;
     }
 
@@ -108,38 +102,36 @@ public class Intakenf implements Subsystem {
      *   - Front triggered: pivot up, both motors stop
      */
     public void updateSmartIntake() {
+        getCount(); // keep hasBall updated every loop
+
         if (isFrontBeamBreakTriggered()) {
             pivotUp();
-            intake1.setPower(0);
+            transfer.setPower(0);
             dropDownIntake.setPower(0);
         } else if (isTopBeamBreakTriggered()) {
             dropDownIntake.setPower(-1);
-            intake1.setPower(0);
+            transfer.setPower(0);
         } else {
             dropDownIntake.setPower(-1);
-            intake1.setPower(-1);
+            transfer.setPower(-1);
         }
     }
-
 
 //-------------------------------------------------------------------------------
 
     @Override
     public void initialize() {
-        intake1 = new MotorEx("intake1");
+        transfer = new MotorEx("transfer");
         dropDownIntake = new MotorEx("dropdownIntake");
-        intake1.reverse();
+        transfer.reverse();
         dropDownIntake.reverse();
-        intake = new MotorGroup(intake1, dropDownIntake);
+        intake = new MotorGroup(transfer, dropDownIntake);
 
         // Beam breaks
         beamBreakFront = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "beamBreakFront");
-        beamBreakMid   = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "beamBreakMid");
         beamBreakTop   = ActiveOpMode.hardwareMap().get(DigitalChannel.class, "beamBreakTop");
 
-
         beamBreakFront.setMode(DigitalChannel.Mode.INPUT);
-        beamBreakMid.setMode(DigitalChannel.Mode.INPUT);
         beamBreakTop.setMode(DigitalChannel.Mode.INPUT);
 
         // Pivot servo
@@ -147,6 +139,8 @@ public class Intakenf implements Subsystem {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+        getCount(); // continuously update hasBall each loop
+    }
 
 }

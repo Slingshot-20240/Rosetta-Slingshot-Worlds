@@ -69,6 +69,7 @@ public class s extends SubsystemGroup {
      */
     public Command shoot(double shootTime) {
         return new ParallelGroup(
+                Intakenf.INSTANCE.in(),
                 new SequentialGroup(
                         Stoppernf.INSTANCE.open(),
                         new Delay(shootTime),

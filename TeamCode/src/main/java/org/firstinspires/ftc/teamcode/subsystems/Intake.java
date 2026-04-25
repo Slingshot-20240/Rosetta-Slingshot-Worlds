@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
-    public final DcMotorEx intake1;
+    public final DcMotorEx transfer;
     public final DcMotorEx dropdownIntake;
 
-    public final DigitalChannel beamBreakFront;  // near front of intake - triggers pivot up + stops all intake
-    public final DigitalChannel beamBreakMid;    // middle - unused for now, kept for future use
-    public final DigitalChannel beamBreakTop;    // top - stops transfer motor, dropdown still runs
+    public final DigitalChannel beamBreakFront; // near front of intake - triggers pivot up + stops all intake
+    public final DigitalChannel beamBreakTop;   // top - stops transfer motor, dropdown still runs
 
     public final Servo pivotServo;
 
@@ -20,32 +19,30 @@ public class Intake {
     public static final double PIVOT_UP   = 1.0;
     public static final double PIVOT_DOWN = 0.0;
 
-    private boolean lastDetected = false;
+    // True when the last (3rd) ball is detected — both sensors triggered
+    public boolean hasBall = false;
 
 
     public Intake(HardwareMap hardwareMap) {
-        intake1 = hardwareMap.get(DcMotorEx.class, "intake1");
+        transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         dropdownIntake = hardwareMap.get(DcMotorEx.class, "dropdownIntake");
-        intake1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         dropdownIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         beamBreakFront = hardwareMap.get(DigitalChannel.class, "beamBreakFront");
-        beamBreakMid   = hardwareMap.get(DigitalChannel.class, "beamBreakMid");
         beamBreakTop   = hardwareMap.get(DigitalChannel.class, "beamBreakTop");
 
         beamBreakFront.setMode(DigitalChannel.Mode.INPUT);
-        beamBreakMid.setMode(DigitalChannel.Mode.INPUT);
         beamBreakTop.setMode(DigitalChannel.Mode.INPUT);
 
         pivotServo = hardwareMap.get(Servo.class, "pivotServo");
     }
 
-    // constructor for JUnit
-    public Intake(DcMotorEx intake1, DcMotorEx intake2) {
+    // Constructor for JUnit
+    public Intake(DcMotorEx transfer, DcMotorEx intake2) {
         this.dropdownIntake = intake2;
-        this.intake1 = intake1;
+        this.transfer       = transfer;
         this.beamBreakFront = null;
-        this.beamBreakMid   = null;
         this.beamBreakTop   = null;
         this.pivotServo     = null;
     }
@@ -54,22 +51,22 @@ public class Intake {
 
     public void intakeTransferOnClose() {
         dropdownIntake.setPower(-1);
-        intake1.setPower(-1);
+        transfer.setPower(-1);
     }
 
     public void intakeTransferOnFar() {
         dropdownIntake.setPower(-1);
-        intake1.setPower(-0.75);
+        transfer.setPower(-0.75);
     }
 
     public void intakeTransferOff() {
-        intake1.setPower(0);
+        transfer.setPower(0);
         dropdownIntake.setPower(0);
     }
 
     public void intakeTransferReverse() {
         dropdownIntake.setPower(1);
-        intake1.setPower(1);
+        transfer.setPower(1);
     }
 
 //-------------------------------------------------------------------------------
@@ -93,11 +90,6 @@ public class Intake {
         return beamBreakFront != null && !beamBreakFront.getState();
     }
 
-    /** Returns true when the middle beam break detects a ball */
-    public boolean isMidBeamBreakTriggered() {
-        return beamBreakMid != null && !beamBreakMid.getState();
-    }
-
     /** Returns true when the top beam break detects a ball */
     public boolean isTopBeamBreakTriggered() {
         return beamBreakTop != null && !beamBreakTop.getState();
@@ -108,17 +100,20 @@ public class Intake {
 
     /**
      * Returns the number of balls currently detected inside the robot.
-     * Each beam break that is triggered counts as one ball.
      *
      * beamBreakFront = ball entering intake (stage 1)
-     * beamBreakMid   = ball in transfer (stage 2)
-     * beamBreakTop   = ball fully loaded at top (stage 3)
+     * beamBreakTop   = ball fully loaded at top (stage 2 / final)
+     *
+     * hasBall is set to true when count reaches 2 (both sensors triggered),
+     * representing the robot being full with 3 balls.
      */
     public int getCount() {
         int count = 0;
         if (isFrontBeamBreakTriggered()) count++;
-        if (isMidBeamBreakTriggered())   count++;
         if (isTopBeamBreakTriggered())   count++;
+
+        hasBall = (count >= 2);
+
         return count;
     }
 
@@ -129,26 +124,23 @@ public class Intake {
      * Call this in your opmode loop during intaking.
      *
      * Behavior:
-     *   - Both dropdownIntake and transfer (intake1) run until top beam break sees a ball
+     *   - Both dropdownIntake and transfer run until top beam break sees a ball
      *   - Once top beam break is triggered: dropdown still runs, transfer stops
      *   - Once front beam break is triggered: pivot goes up, both motors stop
      */
     public void updateSmartIntake() {
+        getCount(); // keep hasBall updated every loop
+
         if (isFrontBeamBreakTriggered()) {
-            // Ball detected at front - pivot up and kill all intake
             pivotUp();
-            intake1.setPower(0);
+            transfer.setPower(0);
             dropdownIntake.setPower(0);
         } else if (isTopBeamBreakTriggered()) {
-            // Ball at top - keep dropdown running, stop transfer
             dropdownIntake.setPower(-1);
-            intake1.setPower(0);
+            transfer.setPower(0);
         } else {
-            // No ball detected yet - run both at full
             dropdownIntake.setPower(-1);
-            intake1.setPower(-1);
+            transfer.setPower(-1);
         }
     }
-
-
 }

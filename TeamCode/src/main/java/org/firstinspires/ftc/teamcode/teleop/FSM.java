@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Park;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Stopper;
@@ -21,7 +20,6 @@ public class FSM {
     private final Intake intake;
     private final Stopper stopper;
     private final Shooter shooter;
-    private final Park park;
 
     // --------------- MISC ---------------
     public double lastVelo = 800;
@@ -40,7 +38,6 @@ public class FSM {
 
         intake = robot.intake;
         stopper = robot.stopper;
-        park = robot.park;
         shooter = robot.shooter;
 
         savedType = ControlType.PID_CONTROL;
@@ -51,11 +48,6 @@ public class FSM {
 
         switch (state) {
             case BASE_STATE:
-
-                // Park toggle
-                if (gamepad.park.value()) {
-                    state = FSMStates.PARK;
-                }
 
                 // Intake toggle
                 if (gamepad.intake.value()) {
@@ -183,14 +175,6 @@ public class FSM {
 
                 break;
 
-            case PARK:
-                park.tilt();
-                if (!gamepad.park.value()) {
-                    state = FSMStates.BASE_STATE;
-                    park.unTilt();
-                }
-
-                break;
 
             // --------------- Hardcoded Only ---------------
 
