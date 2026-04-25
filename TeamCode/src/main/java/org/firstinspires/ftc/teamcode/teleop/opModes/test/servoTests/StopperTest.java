@@ -25,7 +25,7 @@ public class StopperTest extends OpMode {
     public void loop() {
         robot.stopper.stopper.setPosition(stopperPos);
 
-        robot.intake.intake1.setPower(stage2Speed);
+        robot.intake.transfer.setPower(stage2Speed);
 
         robot.intake.dropdownIntake.setPower(-1);
 
