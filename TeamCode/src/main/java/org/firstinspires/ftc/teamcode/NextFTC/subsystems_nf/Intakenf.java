@@ -8,6 +8,7 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
+import dev.nextftc.hardware.positionable.SetPosition;
 import dev.nextftc.hardware.powerable.SetPower;
 
 public class Intakenf implements Subsystem {
@@ -21,9 +22,9 @@ public class Intakenf implements Subsystem {
     MotorGroup intake;
 
     // Beam break sensors
-    public DigitalChannel beamBreakFront; // front of intake — triggers pivot up + stops all intake
-    public DigitalChannel beamBreakMid;   // middle — available for future use
-    public DigitalChannel beamBreakTop;   // top — stops transfer, dropdown keeps running
+    public DigitalChannel beamBreakFront; // front of intake - triggers pivot up + stops all intake
+    public DigitalChannel beamBreakMid;   // middle - available for future use
+    public DigitalChannel beamBreakTop;   // top - stops transfer, dropdown keeps running
 
     // Pivot servo
     public ServoEx pivotServo;
@@ -49,15 +50,14 @@ public class Intakenf implements Subsystem {
 
 //-------------------------------------------------------------------------------
 // Pivot servo functions
-
     /** Pivots the servo up (ball loaded position) */
-    public void pivotUp() {
-        if (pivotServo != null) pivotServo.setPosition(PIVOT_UP);
+    public Command pivotUp() {
+        return new SetPosition(pivotServo, PIVOT_UP);
     }
 
     /** Pivots the servo down (intaking position) */
-    public void pivotDown() {
-        if (pivotServo != null) pivotServo.setPosition(PIVOT_DOWN);
+    public Command pivotDown() {
+        return new SetPosition(pivotServo, PIVOT_DOWN);
     }
 
 //-------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ public class Intakenf implements Subsystem {
     }
 
 //-------------------------------------------------------------------------------
-// Smart intake logic — call these in periodic() or your opmode loop
+// Smart intake logic - call these in periodic() or your opmode loop
 
     /**
      * Smart intake at full transfer speed.
