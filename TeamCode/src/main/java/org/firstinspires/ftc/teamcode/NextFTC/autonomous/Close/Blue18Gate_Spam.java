@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.NextFTC.autonomous;
+package org.firstinspires.ftc.teamcode.NextFTC.autonomous.Close;
 
 import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 
@@ -10,6 +10,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
 import org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups.s;
 import org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups.f;
 import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Hoodnf;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Stoppernf;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
@@ -30,9 +32,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @Config
-@Autonomous(name = "Blue 18 Gate + HoldFirst Gate")
-public class Blue18Gate_HoldFirst extends NextFTCOpMode {
-    public Blue18Gate_HoldFirst() {
+@Autonomous(name = "Blue 18 Gate + Spam Gate")
+public class Blue18Gate_Spam extends NextFTCOpMode {
+    public Blue18Gate_Spam() {
         addComponents(
                 new SubsystemComponent(
                         f.i, s.i,
@@ -49,7 +51,6 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
     public double scoreHeading = 137;
     public PathChain shootPreloads;
     public PathChain grabMiddleSet;
-    public PathChain gateSet3;
     public PathChain shootMiddleSet;
     public PathChain gateIntake;
     public PathChain shootGate;
@@ -65,7 +66,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                                 new Pose(17.793, 118.616),
                                 scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(scoreHeading)).setReversed()
+                ).setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(scoreHeading))
                 .build();
 
         grabMiddleSet = follower().pathBuilder().addPath(
@@ -78,19 +79,10 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
-        gateSet3 = follower().pathBuilder().addPath(
+        shootMiddleSet = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(10.000, 59.000),
-                                new Pose(36.496, 70.000),
-                                new Pose(17.000, 70.000)
-                        )
-                ).setConstantHeadingInterpolation(Math.toRadians(180))
-
-                .build();
-
-        shootMiddleSet = follower().pathBuilder().addPath(
-                        new BezierLine(
-                                new Pose(17.000, 70.000),
+                                new Pose(46.862, 59.000),
                                 scorePose
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
@@ -100,7 +92,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
         gateIntake = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(18.562, 53.354),
+                                new Pose(22.357, 48.847),
                                 new Pose(11.314, 60.731)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
@@ -110,7 +102,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
         shootGate = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.314, 60.731),
-                                new Pose(18.562, 53.354),
+                                new Pose(22.357, 48.847),
                                 scorePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
@@ -133,7 +125,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
 
                                 new Pose(54.237, 108.727)
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(144))
 
                 .build();
 
@@ -165,7 +157,6 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                 new ParallelGroup(
                         new SequentialGroup(
                                 f.i.follow(grabMiddleSet, false),
-                                f.i.follow(gateSet3, false),
                                 Intakenf.INSTANCE.off(),
                                 f.i.follow(shootMiddleSet, true)
 
@@ -181,6 +172,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                 new ParallelGroup(
                         new SequentialGroup(
                                 f.i.follow(gateIntake, false),
+                                new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
                                 f.i.follow(shootGate, true)
 
@@ -194,6 +186,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                 new ParallelGroup(
                         new SequentialGroup(
                                 f.i.follow(gateIntake, false),
+                                new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
                                 f.i.follow(shootGate, true)
 
@@ -207,6 +200,23 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                 new ParallelGroup(
                         new SequentialGroup(
                                 f.i.follow(gateIntake, false),
+                                new Delay(1.4),
+                                Intakenf.INSTANCE.off(),
+                                f.i.follow(shootGate, true)
+
+                        ),
+
+                        new SequentialGroup(
+                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                s.i.shoot(0.6)
+                        )
+                ),
+
+                //4th Gate Cycle, might be possible since no gate hold, comment out not enough time
+                new ParallelGroup(
+                        new SequentialGroup(
+                                f.i.follow(gateIntake, false),
+                                new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
                                 f.i.follow(shootGate, true)
 
