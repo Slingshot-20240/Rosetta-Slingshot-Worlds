@@ -153,7 +153,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
     private Command autonomous() {
         return new SequentialGroup(
 
-                //Score Prealoads
+                //Score Preloads
                 new ParallelDeadlineGroup(
                         f.i.follow(shootPreloads, true), //if no move on, check to see if open command finishes
                         BaseShooternf.INSTANCE.setShooterVel(1030)
