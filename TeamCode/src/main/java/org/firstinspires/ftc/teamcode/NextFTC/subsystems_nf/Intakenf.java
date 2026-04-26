@@ -30,7 +30,7 @@ public class Intakenf implements Subsystem {
         return new SetPower(intake, 0.9);
     }
 
-    public Command idle() {
+    public Command off() {
         return new SetPower(intake, 0);
     }
     public Command out() {
