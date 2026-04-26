@@ -244,9 +244,10 @@ public class Red15Close2Gate extends NextFTCOpMode {
     }
 
     private Command init_bot() {
-        return new SequentialGroup(
+        return new ParallelGroup(
                 Hoodnf.INSTANCE.setHoodPos(0.37),
-                Stoppernf.INSTANCE.close()
+                Stoppernf.INSTANCE.close(),
+                Intakenf.INSTANCE.pivotDown()
         );
 
     }
@@ -256,11 +257,8 @@ public class Red15Close2Gate extends NextFTCOpMode {
 
                 new ParallelDeadlineGroup(
                         new FollowPath(scorePreloads),
-                        BaseShooternf.INSTANCE.setShooterVel(1030),
-
-                        Intakenf.INSTANCE.in()
+                        BaseShooternf.INSTANCE.setShooterVel(1030)
                 ),
-                new Delay(0.5),
                 s.i.shoot(0.7),
 
                 new FollowPath(grabSet2),

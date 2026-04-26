@@ -37,6 +37,7 @@ public class Intakenf implements Subsystem {
     public Command in() {
         return new SetPower(intake, 0.9);
     }
+
     public Command idle() {
         return new SetPower(intake, 0);
     }

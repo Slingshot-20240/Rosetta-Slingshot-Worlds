@@ -37,7 +37,6 @@ public class Robot {
     public Shooter shooter;
     public Drivetrain drivetrain;
 
-    public Park park;
 
 
     public GoBildaPinpointDriver driver;
@@ -65,9 +64,7 @@ public class Robot {
         intake = new Intake(hardwareMap);
         stopper = new Stopper(hardwareMap);
         shooter = new Shooter(hardwareMap);
-        park = new Park(hardwareMap);
 
-        park = new Park(hardwareMap);
 
         drivetrain = new Drivetrain(hardwareMap, imu, controls);
 
@@ -79,7 +76,7 @@ public class Robot {
 
     public Robot(GamepadMapping controls, IMU imu, GoBildaPinpointDriver pinpoint,
                  logi cam, Intake intake, Stopper stopper, Shooter shooter, Drivetrain dt,
-                 DigitalChannel led0, DigitalChannel led1, Park park) {
+                 DigitalChannel led0, DigitalChannel led1) {
         this.controls = controls;
         this.imu = imu;
         this.driver = pinpoint;
@@ -89,6 +86,5 @@ public class Robot {
         this.drivetrain = dt;
         this.ledBoard0 = led0;
         this.ledBoard1 = led1;
-        this.park = park;
     }
 }
