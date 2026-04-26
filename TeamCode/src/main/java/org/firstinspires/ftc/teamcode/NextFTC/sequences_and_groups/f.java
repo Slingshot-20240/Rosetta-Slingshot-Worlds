@@ -3,7 +3,11 @@ package org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups;
 
 import com.pedropathing.paths.PathChain;
 
+import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Intakenf;
+import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Stoppernf;
+
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.conditionals.IfElseCommand;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.subsystems.SubsystemGroup;
@@ -13,7 +17,7 @@ public class f extends SubsystemGroup {
     public static final f i = new f();
 
     private f() {
-        super(/*insert subsystem instance here*/);
+        super(Intakenf.INSTANCE);
     }
 
     public final Command follow(PathChain path) {
@@ -21,9 +25,24 @@ public class f extends SubsystemGroup {
                 new FollowPath(path)
         );
     }
+    public final Command follow(PathChain path, boolean open) {
+        return new ParallelGroup(
+                new IfElseCommand(
+                        () -> open,
+                        Stoppernf.INSTANCE.open(),
+                        Stoppernf.INSTANCE.close()
+                ),
+                new FollowPath(path)
+        );
+    }
 
-    public final Command follow(PathChain path, boolean holdEnd) {
-        return new SequentialGroup(
+    public final Command follow(PathChain path, boolean open, boolean holdEnd) {
+        return new ParallelGroup(
+                new IfElseCommand(
+                    () -> open,
+                    Stoppernf.INSTANCE.open(),
+                    Stoppernf.INSTANCE.close()
+                ),
                 new FollowPath(path, holdEnd)
         );
     }
@@ -32,5 +51,9 @@ public class f extends SubsystemGroup {
                 new FollowPath(path, holdEnd, maxPower)
         );
     }
+
+    //--------STOPPER COMMANDS---------------------------------------------
+
+
 
 }
