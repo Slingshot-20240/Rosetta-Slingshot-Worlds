@@ -15,16 +15,16 @@ public class DrivetrainTest extends LinearOpMode {
 
         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-//        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-//        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-//        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -56,13 +56,13 @@ public class DrivetrainTest extends LinearOpMode {
 
             leftFront.setPower(flPower);
             rightFront.setPower(frPower);
-//            leftBack.setPower(blPower);
-//            rightBack.setPower(brPower);
+            leftBack.setPower(blPower);
+            rightBack.setPower(brPower);
 
             telemetry.addData("Front Left  Power", "%.2f", flPower);
             telemetry.addData("Front Right Power", "%.2f", frPower);
-//            telemetry.addData("Back  Left  Power", "%.2f", blPower);
-//            telemetry.addData("Back  Right Power", "%.2f", brPower);
+            telemetry.addData("Back  Left  Power", "%.2f", blPower);
+            telemetry.addData("Back  Right Power", "%.2f", brPower);
             telemetry.addData("Slow Mode", gamepad1.right_bumper ? "ON" : "OFF");
             telemetry.update();
         }
