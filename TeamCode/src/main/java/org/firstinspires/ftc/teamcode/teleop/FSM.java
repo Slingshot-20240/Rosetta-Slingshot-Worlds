@@ -52,19 +52,16 @@ public class FSM {
                 // Intake toggle
                 if (gamepad.intake.value()) {
                     intake.intakeTransferOnClose();
+                    intake.pivotDown();
                 } else if (!gamepad.transfer.locked()) {
                     intake.intakeTransferOff();
+                    intake.pivotUp();
                 }
 
                 // Stopper hold
                 if (gamepad.transfer.locked() && type == ControlType.PID_CONTROL) {
-                    if (Robot.cam.getATdist() > 100) {
-                        intake.intakeTransferOnFar();
-                        stopper.release();
-                    } else {
-                        intake.intakeTransferOnClose();
-                        stopper.release();
-                    }
+                    intake.intakeTransferOnClose();
+                    stopper.release();
                 } else {
                     stopper.stop();
                 }
@@ -73,7 +70,6 @@ public class FSM {
                 if (gamepad.outtake.locked()) {
                     state = FSMStates.OUTTAKING;
                 }
-
 
                 // --------------- PID Only ---------------
 
@@ -163,18 +159,6 @@ public class FSM {
                 }
                 break;
 
-            case PID_SHOOT:
-
-                intake.intakeTransferOnClose();
-                stopper.release();
-
-                if (!gamepad.transfer.locked()) {
-                    state = FSMStates.BASE_STATE;
-                    gamepad.resetMultipleControls(gamepad.transfer, gamepad.outtake);
-                }
-
-                break;
-
 
             // --------------- Hardcoded Only ---------------
 
@@ -230,9 +214,7 @@ public class FSM {
         BASE_STATE,
         SHOOT_FRONT,
         SHOOT_BACK,
-        OUTTAKING,
-        PID_SHOOT,
-        PARK
+        OUTTAKING
     }
 
     public enum ControlType {
