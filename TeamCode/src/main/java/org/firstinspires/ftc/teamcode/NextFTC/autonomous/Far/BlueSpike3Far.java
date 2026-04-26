@@ -66,36 +66,36 @@ public class BlueSpike3Far extends NextFTCOpMode {
                         new BezierLine(
                                 new Pose(54.801, 8.777),
 
-                                new Pose(54.000, 15.000)
+                                scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(114))
+                ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(scoreHeading))
                 .build();
 
         grabbingSomethingidklowkey = follower().pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(54.000, 15.000),
+                                scorePose,
                                 new Pose(50.344, 36.189),
                                 new Pose(43.245, 36.189),
-                                new Pose(12.000, 36.189)
+                                new Pose(12, 36.189)
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(114), Math.toRadians(180))
+                ).setLinearHeadingInterpolation(Math.toRadians(scoreHeading), Math.toRadians(180))
 
                 .build();
 
         shootSet2 = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(12.000, 36.189),
+                                new Pose(12, 36.189),
 
-                                new Pose(54.000, 15.000)
+                                scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(114))
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
                 .build();
 
         grabHpBottom = follower().pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(54.000, 15.000),
+                                scorePose,
                                 new Pose(33.566, 8.219),
-                                new Pose(11.000, 8.219)
+                                new Pose(11, 8.219)
                         )
                 ).setTangentHeadingInterpolation()
 
@@ -103,18 +103,18 @@ public class BlueSpike3Far extends NextFTCOpMode {
 
         shootHpBottom = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(11.000, 8.219),
+                                new Pose(11, 8.219),
 
-                                new Pose(54.000, 15.000)
+                                scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(114))
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
 
                 .build();
         grabHpTop = follower().pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(54.000, 15.000),
+                                scorePose,
                                 new Pose(31.205, 24.072),
-                                new Pose(11.000, 24.000)
+                                new Pose(11, 24)
                         )
                 ).setTangentHeadingInterpolation()
 
@@ -122,20 +122,20 @@ public class BlueSpike3Far extends NextFTCOpMode {
 
         shootHpTop = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(11.000, 24.000),
+                                new Pose(11, 24),
 
-                                new Pose(54.000, 15.000)
+                                scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(114))
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
 
                 .build();
         GETOUT = follower().pathBuilder().addPath(
                     new BezierLine(
-                            new Pose(54.000, 15.000),
+                            scorePose,
 
-                            new Pose(54.000, 33.957)
+                            new Pose(54, 33.957)
                     )
-                ).setConstantHeadingInterpolation(Math.toRadians(114))
+                ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
                 .build();
     }
 

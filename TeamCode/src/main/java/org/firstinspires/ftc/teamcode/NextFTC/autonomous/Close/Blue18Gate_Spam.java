@@ -72,17 +72,17 @@ public class Blue18Gate_Spam extends NextFTCOpMode {
         grabMiddleSet = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(50.000, 59.000),
-                                new Pose(40.000, 59.000),
-                                new Pose(10.000, 59.000)
+                                new Pose(50, 59),
+                                new Pose(40, 59),
+                                new Pose(10, 59)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         shootMiddleSet = follower().pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(10.000, 59.000),
-                                new Pose(46.862, 59.000),
+                                new Pose(10, 59),
+                                new Pose(46.862, 59),
                                 scorePose
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
@@ -113,7 +113,7 @@ public class Blue18Gate_Spam extends NextFTCOpMode {
                         new BezierCurve(
                                 scorePose,
                                 new Pose(40.256, 83.257),
-                                new Pose(17.000, 83.257)
+                                new Pose(17, 83.257)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -121,7 +121,7 @@ public class Blue18Gate_Spam extends NextFTCOpMode {
 
         shootSet2 = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(17.000, 83.257),
+                                new Pose(17, 83.257),
 
                                 new Pose(54.237, 108.727)
                         )
