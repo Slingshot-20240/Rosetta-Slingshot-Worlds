@@ -3,12 +3,17 @@ package org.firstinspires.ftc.teamcode.teleop.opModes.test;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 @TeleOp(name = "Drivetrain Test", group = "test")
 public class DrivetrainTest extends LinearOpMode {
 
     private DcMotor leftFront, rightFront, leftBack, rightBack;
+    private Intake intake;
+
 
     @Override
     public void runOpMode() {
@@ -26,6 +31,11 @@ public class DrivetrainTest extends LinearOpMode {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+        intake = new Intake(hardwareMap);
+
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -34,8 +44,8 @@ public class DrivetrainTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             double vertical   = gamepad1.left_stick_y;
-            double strafe =  gamepad1.left_stick_x;
-            double turn     =  gamepad1.right_stick_x;
+            double strafe =  -gamepad1.left_stick_x;
+            double turn     =  -gamepad1.right_stick_x;
 
             double flPower = vertical + strafe + turn;
             double frPower = vertical - strafe - turn;
@@ -65,6 +75,15 @@ public class DrivetrainTest extends LinearOpMode {
             telemetry.addData("Back  Right Power", "%.2f", brPower);
             telemetry.addData("Slow Mode", gamepad1.right_bumper ? "ON" : "OFF");
             telemetry.update();
+
+
+            if (gamepad1.left_trigger > 0) {
+                intake.intakeTransferOnClose();
+                intake.pivotDown();
+            } else {
+                intake.intakeTransferOff();
+                intake.pivotUp();
+            }
         }
     }
 }

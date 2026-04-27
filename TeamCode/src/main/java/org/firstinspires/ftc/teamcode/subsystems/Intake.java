@@ -35,13 +35,13 @@ public class Intake {
         transfer.setPower(power);
     }
     public void intakeTransferOnClose() {
-        dropdownIntake.setPower(-1);
-        transfer.setPower(-1);
+        dropdownIntake.setPower(1);
+        transfer.setPower(1);
     }
 
     public void intakeTransferOnFar() {
-        dropdownIntake.setPower(-1);
-        transfer.setPower(-0.75);
+        dropdownIntake.setPower(1);
+        transfer.setPower(0.75);
     }
 
     public void intakeTransferOff() {
@@ -50,8 +50,8 @@ public class Intake {
     }
 
     public void intakeTransferReverse() {
-        dropdownIntake.setPower(1);
-        transfer.setPower(1);
+        dropdownIntake.setPower(-1);
+        transfer.setPower(-1);
     }
 
     public void pivotUp() {
@@ -59,7 +59,7 @@ public class Intake {
     }
 
     public void pivotDown() {
-        pivotServo.setPosition(0.67);
+        pivotServo.setPosition(0.72);
     }
 
     public void setPivotPos(double position) {

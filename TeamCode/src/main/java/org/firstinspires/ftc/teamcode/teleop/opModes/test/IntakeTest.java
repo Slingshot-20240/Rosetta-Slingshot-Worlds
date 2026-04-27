@@ -18,25 +18,18 @@ import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 public class IntakeTest extends OpMode {
 
     public static double power = 1.0;
-    public static double position = 0.67;
+    public static double position = 0.72;
     private Intake intake;
     DcMotor leftFront, rightFront;
 
     @Override
     public void init() {
         intake = new Intake(hardwareMap);
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-
-
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
     public void loop() {
-//        intake.setPivotPos(position);
+        intake.setPivotPos(position);
         intake.setIntakePower(power);
-        leftFront.setPower(1.0);
-        rightFront.setPower(1.0);
     }
 }

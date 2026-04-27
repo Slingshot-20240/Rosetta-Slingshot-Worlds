@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.NextFTC.autonomous.Far;
+package org.firstinspires.ftc.teamcode.NextFTC.autonomous.Close.blue;
 
 import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 
@@ -6,19 +6,24 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+
+import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
-import org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups.f;
 import org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups.s;
-import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.BaseShooternf;
+import org.firstinspires.ftc.teamcode.NextFTC.sequences_and_groups.f;
 import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Hoodnf;
 import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Intakenf;
+import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.BaseShooternf;
 import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Stoppernf;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.delays.WaitUntil;
+import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -28,9 +33,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @Config
-@Autonomous(name = "Blue Hp Cycle")
-public class BlueHpCycle extends NextFTCOpMode {
-    public BlueHpCycle() {
+@Autonomous(name = "Blue 18 Gate + Spam Gate")
+public class Blue21Gate_Spam extends NextFTCOpMode {
+    public Blue21Gate_Spam() {
         addComponents(
                 new SubsystemComponent(
                         f.i, s.i,
@@ -43,76 +48,126 @@ public class BlueHpCycle extends NextFTCOpMode {
     }
 
 
-    public Pose scorePose = new Pose(54, 15);
-    public double scoreHeading = 114;
-    public PathChain shootPreloads;
-    public PathChain grabHpBottom;
-    public PathChain shootHpBottom;
-    public PathChain grabHpTop;
-    public PathChain shootHpTop;
-    public PathChain GETOUT;
+    // Score Parameters ---------------------------------------------------------------
+    public Pose scorePose = new Pose(54, 94);
+    public double scoreHeading = 137;
+    // Gate Parameters ---------------------------------------------------------------
+    public Pose gatePose = new Pose(11.314, 60.731);
+    public double gateHeading = 135;
 
+    public PathChain shootPreloads;
+    public PathChain grabMiddleSet;
+    public PathChain shootMiddleSet;
+    public PathChain gateIntake;
+    public PathChain shootGate;
+
+    public PathChain grabSet2;
+    public PathChain shootSet2;
 
     public void buildPaths() {
-        follower().setStartingPose(new Pose(54.8, 8.8, Math.toRadians(90)));
+        follower().setStartingPose(new Pose(17.8, 118.6, Math.toRadians(144)));
 
         shootPreloads = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(54.801, 8.777),
-
+                                new Pose(17.793, 118.616),
                                 scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(scoreHeading))
+                ).setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(scoreHeading))
                 .build();
 
-        grabHpBottom = follower().pathBuilder().addPath(
+        grabMiddleSet = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(33.566, 8.219),
-                                new Pose(11, 8.219)
+                                new Pose(50, 59),
+                                new Pose(40, 59),
+                                new Pose(10, 59)
                         )
-                ).setTangentHeadingInterpolation()
-
+                ).setHeadingInterpolation(
+                        HeadingInterpolator.piecewise(
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0,
+                                        0.55,
+                                        HeadingInterpolator.linear(
+                                                Math.toRadians(scoreHeading),
+                                                Math.toRadians(180)
+                                        )
+                                ),
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0.55,
+                                        1.0,
+                                        HeadingInterpolator.constant(Math.toRadians(180))
+                                )
+                        )
+                )
                 .build();
 
-        shootHpBottom = follower().pathBuilder().addPath(
-                        new BezierLine(
-                                new Pose(11, 8.219),
-
+        shootMiddleSet = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                new Pose(10, 59),
+                                new Pose(46.862, 59), //Tune this point for least time, optimize
                                 scorePose
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
 
                 .build();
 
-        grabHpTop = follower().pathBuilder().addPath(
+        gateIntake = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(31.205, 24.072),
-                                new Pose(11, 24)
+                                new Pose(22.357, 48.847),
+                                //Control point - may have to make it go around, kind of infront, and then push to gate
+                                gatePose
                         )
-                ).setTangentHeadingInterpolation()
+                ).setHeadingInterpolation(
+                        HeadingInterpolator.piecewise(
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0,
+                                        0.65,
+                                        HeadingInterpolator.linear(
+                                                Math.toRadians(scoreHeading),
+                                                Math.toRadians(gateHeading)
+                                        )
+                                ),
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0.65,
+                                        1.0,
+                                        HeadingInterpolator.constant(Math.toRadians(gateHeading))
+                                )
+                        )
+                )
 
                 .build();
 
-        shootHpTop = follower().pathBuilder().addPath(
-                        new BezierLine(
-                                new Pose(11, 24),
-
+        shootGate = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                new Pose(11.314, 60.731),
+                                new Pose(22.357, 48.847),
                                 scorePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(scoreHeading))
-
-                .build();
-
-        GETOUT = follower().pathBuilder().addPath(
-                    new BezierLine(
-                            scorePose,
-
-                            new Pose(54, 33.957)
-                    )
                 ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
+
                 .build();
+
+        grabSet2 = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                scorePose,
+                                new Pose(40.256, 83.257),
+                                new Pose(17, 83.257)
+                        )
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
+
+                .build();
+
+        shootSet2 = follower().pathBuilder().addPath(
+                        new BezierLine(
+                                new Pose(17, 83.257),
+
+                                new Pose(54.237, 108.727)
+                        )
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(144))
+
+                .build();
+
     }
 
 
@@ -120,7 +175,7 @@ public class BlueHpCycle extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.setHoodPos(0.37),
+                Hoodnf.INSTANCE.closeSide(),
                 Stoppernf.INSTANCE.close(),
                 Intakenf.INSTANCE.pivotDown()
         );
@@ -128,7 +183,7 @@ public class BlueHpCycle extends NextFTCOpMode {
 
     private Command autonomous() {
         return new SequentialGroup(
-                /*
+
                 //Score Preloads
                 new ParallelDeadlineGroup(
                         f.i.follow(shootPreloads, true), //if no move on, check to see if open command finishes
@@ -138,7 +193,6 @@ public class BlueHpCycle extends NextFTCOpMode {
 
 
                 //Middle Set
-
                 new ParallelGroup(
                         new SequentialGroup(
                                 f.i.follow(grabMiddleSet, false),
@@ -228,7 +282,7 @@ public class BlueHpCycle extends NextFTCOpMode {
                                 s.i.shoot(0.6)
                         )
                 )
-            */
+
         );
     }
 

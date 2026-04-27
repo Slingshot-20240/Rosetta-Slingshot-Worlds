@@ -67,7 +67,6 @@ public class GamepadMapping {
 
         // MISC
         switchMode.update(gamepad1.dpad_down);
-        park.update(gamepad1.x);
 
         // SHOOTER - FOR HARDCODED ONLY
         shootBack.update(gamepad1.right_trigger >= 0.3);

@@ -57,8 +57,8 @@ public class BaseShooternf implements Subsystem {
 
     @Override
     public void initialize() {
-        outtake1 = new MotorEx("outtakeTop");
-        outtake2 = new MotorEx("outtakeBot");
+        outtake1 = new MotorEx("ol");
+        outtake2 = new MotorEx("or");
         outtake2.reverse();
         shooter = new MotorGroup(outtake1, outtake2);
 
