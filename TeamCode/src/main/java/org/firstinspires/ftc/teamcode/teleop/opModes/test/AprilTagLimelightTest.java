@@ -53,7 +53,7 @@ public class AprilTagLimelightTest extends OpMode {
             double tX = -llResult.getTx();
 //            double tY = llResult.getTy();
             double tA = llResult.getTa();
-            double dist = 30665.95 / tA;
+            double dist = 2465.489 / tA;
 //
             telemetry.addData("tX (bearing) ",tX);
 //            telemetry.addData("tY",tY);
