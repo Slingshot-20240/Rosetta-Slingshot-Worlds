@@ -42,11 +42,11 @@ public class Intakenf implements Subsystem {
     }
 
     public Command pivotUp() {
-        return new InstantCommand(() -> pivotServo.getServo().setPosition(0.11));
+        return new InstantCommand(() -> pivotServo.getServo().setPosition(0.28));
     }
 
     public Command pivotDown() {
-        return new InstantCommand(() -> pivotServo.getServo().setPosition(0.73));
+        return new InstantCommand(() -> pivotServo.getServo().setPosition(0.9));
     }
 
 //-------------------------------------------------------------------------------

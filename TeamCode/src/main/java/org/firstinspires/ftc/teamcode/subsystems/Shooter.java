@@ -61,7 +61,7 @@ public class Shooter {
 
     // calculates target velocity with CURRENT distance away from the goal
     public double calculateShooterMPS() {
-        return calculateShooterRPM(Robot.cam.getTargetArtifactTravelDistanceX());
+        return calculateShooterRPM(Robot.limelight.getTargetArtifactTravelDistanceX());
     }
 
     // calculates target velocity in TICKS PER SECOND instead of meters per second
@@ -91,7 +91,7 @@ public class Shooter {
 
     // returns the target angle in RADIANS depending on CURRENT distance from the april tag
     public double calculateHoodAngle() {
-        return calculateHoodAngle(Robot.cam.getTargetArtifactTravelDistanceX());
+        return calculateHoodAngle(Robot.limelight.getTargetArtifactTravelDistanceX());
     }
 
     // returns the target angle in HOOD POS (0-1) instead of radians
@@ -125,11 +125,11 @@ public class Shooter {
     // fully down is .65
     // fully up is 0
     public void hoodToBack() {
-        variableHood.setPosition(.65);
+        variableHood.setPosition(0.36);
     }
 
     public void hoodToFront() {
-        variableHood.setPosition(0);
+        variableHood.setPosition(0.96);
     }
 
     public void shootFromBack() {

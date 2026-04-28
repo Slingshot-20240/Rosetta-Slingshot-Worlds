@@ -55,11 +55,11 @@ public class Intake {
     }
 
     public void pivotUp() {
-       pivotServo.setPosition(0.11);
+       pivotServo.setPosition(0.28);
     }
 
     public void pivotDown() {
-        pivotServo.setPosition(0.74);
+        pivotServo.setPosition(0.9);
     }
 
     public void setPivotPos(double position) {

@@ -77,31 +77,31 @@ public class FSM {
                 if (type == ControlType.PID_CONTROL) {
 
                     // variables
-//                    double distance = Robot.cam.getTargetArtifactTravelDistanceX();
-//                    double targetVelocity = robot.shooter.calculateShooterRPM(distance) + 50;
-//                    double targetHoodPos;
-//
-//                    // calculate target
-//                    if (Robot.cam.getATdist() > 100) {
-//                        targetHoodPos = robot.shooter.calculateHoodPos(distance) - 0.2;
-//                        targetVelocity = targetVelocity + 50;
-//                    } else {
-//                        targetHoodPos = robot.shooter.calculateHoodPos(distance);
-//                    }
-//
-//                    if (Robot.cam.getATdist() != 0) {
-//                        lastVelo = targetVelocity;
-//                    }
-//
-//                    // This should prevent the shooter from changing hood pos if it can't see the AprilTag (so if it cuts out it's fine)
-//                    if (Robot.cam.getTargetArtifactTravelDistanceX() == 22) {
-//                        robot.shooter.setHoodAngle(shooter.variableHood.getPosition());
-//                        robot.shooter.setShooterVelocity(lastVelo);
-//                    } else {
-//                        // get position will get last passed position so uh hopefully that should work
-//                        robot.shooter.setHoodAngle(targetHoodPos);
-//                        robot.shooter.setShooterVelocity(targetVelocity); // TODO maybe add offset (was 50)
-//                    }
+                    double distance = Robot.limelight.getTargetArtifactTravelDistanceX();
+                    double targetVelocity = robot.shooter.calculateShooterRPM(distance) + 50;
+                    double targetHoodPos;
+
+                    // calculate target
+                    if (Robot.limelight.getDistanceInches() > 100) {
+                        targetHoodPos = robot.shooter.calculateHoodPos(distance) - 0.2;
+                        targetVelocity = targetVelocity + 50;
+                    } else {
+                        targetHoodPos = robot.shooter.calculateHoodPos(distance);
+                    }
+
+                    if (Robot.limelight.getDistanceInches() != 0) {
+                        lastVelo = targetVelocity;
+                    }
+
+                    // This should prevent the shooter from changing hood pos if it can't see the AprilTag (so if it cuts out it's fine)
+                    if (Robot.limelight.getTargetArtifactTravelDistanceX() == 22) {
+                        robot.shooter.setHoodAngle(shooter.variableHood.getPosition());
+                        robot.shooter.setShooterVelocity(lastVelo);
+                    } else {
+                        // get position will get last passed position so uh hopefully that should work
+                        robot.shooter.setHoodAngle(targetHoodPos);
+                        robot.shooter.setShooterVelocity(targetVelocity); // TODO maybe add offset (was 50)
+                    }
                 }
 
                 // --------------- Hardcoded Only ---------------

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop.opModes.test;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,9 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.teleop.FSM;
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
+@Config
 @TeleOp(name="FSMTest", group="test")
 public class FSMTest extends OpMode {
     // Standard Robot Classes
@@ -19,6 +22,9 @@ public class FSMTest extends OpMode {
 
     // Pedro Drivetrain
     private Follower follower;
+    private Shooter shooter;
+    public static double shooterVelocity = 0.6;
+    public static double hoodAngle = 0.5;
 
     @Override
     public void start() {
@@ -30,6 +36,8 @@ public class FSMTest extends OpMode {
         controls = new GamepadMapping(gamepad1, gamepad2);
         robot = new Robot(hardwareMap, controls);
         fsm = new FSM(hardwareMap, controls, robot);
+        shooter = new Shooter(hardwareMap);
+
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(PoseStorage.startingPose);
@@ -49,6 +57,9 @@ public class FSMTest extends OpMode {
 
         telemetry.addData("Control Type", fsm.getControlType());
         telemetry.addData("Switch value", controls.switchMode.value());
+
+        shooter.setShooterVelocity(shooterVelocity);
+        shooter.setHoodAngle(hoodAngle);
     }
 
     @Override

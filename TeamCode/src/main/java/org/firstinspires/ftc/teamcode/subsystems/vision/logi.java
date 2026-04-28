@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 public class logi {
     AprilTagProcessor apriltagPipeline;
 
-    BallProcessor ballPipeline;
 
     VisionPortal portal;
 
@@ -38,13 +37,11 @@ public class logi {
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
-        ballPipeline = new BallProcessor();
 
         int[] myPortalsList = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.HORIZONTAL);
 
         portal = new VisionPortal.Builder()
                 .setCamera(hw.get(WebcamName.class, "Webcam 1"))
-                .addProcessors(apriltagPipeline, ballPipeline)
                 .setCameraResolution(new Size(1920, 1080))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setAutoStopLiveView(true)
@@ -52,7 +49,6 @@ public class logi {
                 .build();
 
         portal.setProcessorEnabled(apriltagPipeline, true);
-        portal.setProcessorEnabled(ballPipeline, false);
 
     }
 
@@ -68,11 +64,9 @@ public class logi {
 
                 .build();
 
-        ballPipeline = new BallProcessor();
 
         portal = new VisionPortal.Builder()
                 .setCamera(cam)
-                .addProcessors(apriltagPipeline, ballPipeline)
                 .setCameraResolution(new Size(1920, 1080))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setAutoStopLiveView(true)
@@ -80,7 +74,6 @@ public class logi {
                 .build();
 
         portal.setProcessorEnabled(apriltagPipeline, true);
-        portal.setProcessorEnabled(ballPipeline, false);
 
         //Exposure Control
         ExposureControl exposureControl = portal.getCameraControl(ExposureControl.class);
@@ -105,13 +98,7 @@ public class logi {
         portal.setProcessorEnabled(apriltagPipeline, enabled);
     }
 
-    public void enableBall() {
-        portal.setProcessorEnabled(ballPipeline, true);
-    }
 
-    public void enableBall(boolean enabled) {
-        portal.setProcessorEnabled(ballPipeline, enabled);
-    }
 
     public double getATdist() {
         if(!portal.getProcessorEnabled(apriltagPipeline))
@@ -141,7 +128,7 @@ public class logi {
         return 0.0;
     }
 
-    // extra 4" for cam-to-flywheel, 18" for AT-to-back-of-goal
+    // extra 4" for limelight-to-flywheel, 18" for AT-to-back-of-goal
     public double getTargetArtifactTravelDistanceX() {
         return getATdist() + 22;
     }

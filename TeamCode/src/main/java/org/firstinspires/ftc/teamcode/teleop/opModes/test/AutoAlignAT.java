@@ -49,7 +49,7 @@ public class AutoAlignAT extends OpMode {
         follower.update();
         telemetry.update();
         //LED
-        if (Robot.cam.getATdist() != 0) {
+        if (Robot.limelight.getDistanceInches() != 0) {
             robot.ledBoard0.setState(true);
             robot.ledBoard1.setState(true);
         } else {
@@ -59,7 +59,7 @@ public class AutoAlignAT extends OpMode {
 
 
         //AUTO ALIGN
-        double atBearing = Math.toRadians(Robot.cam.getATangle());
+        double atBearing = Math.toRadians(Robot.limelight.getAngleBearing());
         double atHeadingError = angleWrap(atBearing);
         boolean visionTurnFinished = Math.abs(atHeadingError) < tolerance;
 
@@ -88,8 +88,8 @@ public class AutoAlignAT extends OpMode {
             autoTurnVision = false;
         }
 
-        telemetry.addData("AT angle", Robot.cam.getATangle());
-        telemetry.addData("AT dist",  Robot.cam.getATdist());
+        telemetry.addData("AT angle", Robot.limelight.getAngleBearing());
+        telemetry.addData("AT dist",  Robot.limelight.getDistanceInches());
 
         telemetry.addLine("--------------------------------");
         telemetry.addData("Vision AutoTurn", autoTurnVision);

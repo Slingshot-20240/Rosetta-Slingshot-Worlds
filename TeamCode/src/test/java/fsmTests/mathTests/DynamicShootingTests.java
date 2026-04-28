@@ -106,9 +106,9 @@ public class DynamicShootingTests {
     @Test
     public void testShooterConversion() {
         when(webCam.getATdist()).thenReturn(48.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
-        double actualMPS = shooter.calculateShooterMPS(robot.cam.getATdist());
+        double actualMPS = shooter.calculateShooterMPS(robot.limelight.getATdist());
 
         double actualRPM = shooter.calculateShooterRPM(actualMPS);
 
@@ -119,9 +119,9 @@ public class DynamicShootingTests {
     public void testShooterCalculation48() {
         // 48 inches from the goal
         when(webCam.getATdist()).thenReturn(48.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
-        double actualMPS = shooter.calculateShooterMPS(robot.cam.getATdist());
+        double actualMPS = shooter.calculateShooterMPS(robot.limelight.getATdist());
 
         assertEquals(3.99812243100862, actualMPS);
     }
@@ -130,9 +130,9 @@ public class DynamicShootingTests {
     public void testShooterCalculation100() {
         // 48 inches from the goal
         when(webCam.getATdist()).thenReturn(100.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
-        double actualMPS = shooter.calculateShooterMPS(robot.cam.getATdist());
+        double actualMPS = shooter.calculateShooterMPS(robot.limelight.getATdist());
 
         assertEquals(5.353239674370232, actualMPS);
     }
@@ -141,9 +141,9 @@ public class DynamicShootingTests {
     public void testHoodCalculation() {
         // 48 inches from the goal
         when(webCam.getATdist()).thenReturn(48.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
-        double hoodPos = shooter.calculateHoodPos(robot.cam.getATdist());
+        double hoodPos = shooter.calculateHoodPos(robot.limelight.getATdist());
 
         assertEquals(0.37663332819326245, hoodPos);
     }

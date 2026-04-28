@@ -41,7 +41,7 @@ public class Robot {
 
     public GamepadMapping controls;
 
-    public static logi cam;
+    public static Limelight limelight;
 
     public DigitalChannel ledBoard0;
     public DigitalChannel ledBoard1;
@@ -57,7 +57,7 @@ public class Robot {
 
         //driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-        // cam = new logi(hardwareMap);
+        // limelight = new logi(hardwareMap);
 
         intake = new Intake(hardwareMap);
         stopper = new Stopper(hardwareMap);

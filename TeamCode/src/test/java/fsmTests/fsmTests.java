@@ -249,7 +249,7 @@ public class fsmTests {
     public void baseLEDATDetected() {
         // inject mocks
         when(webCam.getATdist()).thenReturn(1.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
         // set up states
         fsm.setControlType(FSM.ControlType.PID_CONTROL);
@@ -265,7 +265,7 @@ public class fsmTests {
     public void baseLEDATUndetected() {
         // inject mocks
         when(webCam.getATdist()).thenReturn(0.0);
-        robot.cam = webCam;
+        robot.limelight = webCam;
 
         // set up states
         fsm.setControlType(FSM.ControlType.PID_CONTROL);
