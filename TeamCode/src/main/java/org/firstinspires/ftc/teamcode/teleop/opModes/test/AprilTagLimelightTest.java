@@ -64,5 +64,8 @@ public class AprilTagLimelightTest extends OpMode {
         } else {
             telemetry.addLine("No tag found");
         }
+
+        controls.joystickUpdate();
+        robot.drivetrain.update();
     }
 }
