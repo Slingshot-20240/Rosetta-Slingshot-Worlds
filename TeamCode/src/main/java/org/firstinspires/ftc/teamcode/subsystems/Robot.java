@@ -37,9 +37,7 @@ public class Robot {
     public Shooter shooter;
     public Drivetrain drivetrain;
 
-
-
-    public GoBildaPinpointDriver driver;
+    //public GoBildaPinpointDriver driver;
 
     public GamepadMapping controls;
 
@@ -54,24 +52,19 @@ public class Robot {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP)));
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
         imu.resetYaw();
 
-        driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        //driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-        cam = new logi(hardwareMap);
+        // cam = new logi(hardwareMap);
 
         intake = new Intake(hardwareMap);
         stopper = new Stopper(hardwareMap);
-        shooter = new Shooter(hardwareMap);
+        // shooter = new Shooter(hardwareMap);
 
 
         drivetrain = new Drivetrain(hardwareMap, imu, controls);
-
-        ledBoard0 = hardwareMap.get(DigitalChannel.class, "ledBoard0");
-        ledBoard0.setMode(DigitalChannel.Mode.OUTPUT);
-        ledBoard1 = hardwareMap.get(DigitalChannel.class, "ledBoard1");
-        ledBoard1.setMode(DigitalChannel.Mode.OUTPUT);
     }
 
     public Robot(GamepadMapping controls, IMU imu, GoBildaPinpointDriver pinpoint,
@@ -79,7 +72,7 @@ public class Robot {
                  DigitalChannel led0, DigitalChannel led1) {
         this.controls = controls;
         this.imu = imu;
-        this.driver = pinpoint;
+        //this.driver = pinpoint;
         this.intake = intake;
         this.stopper = stopper;
         this.shooter = shooter;

@@ -59,7 +59,7 @@ public class Intake {
     }
 
     public void pivotDown() {
-        pivotServo.setPosition(0.72);
+        pivotServo.setPosition(0.74);
     }
 
     public void setPivotPos(double position) {
