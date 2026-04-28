@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop.opModes.test;
+package org.firstinspires.ftc.teamcode.subsystems.vision;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 @Config
 @TeleOp(name = "Limelight Test", group = "test")
-public class AprilTagLimelightTest extends OpMode {
+public class AutoAlignTest_Ishaan extends OpMode {
 
     private Limelight3A limelight;
     private Robot robot;
