@@ -19,6 +19,7 @@ public class Intake {
     private GamepadMapping controls;
 
     private boolean ballIn = false;
+    private int cycles = 0;
     public Intake(HardwareMap hardwareMap, GamepadMapping controls) {
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         transfer.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -80,11 +81,20 @@ public class Intake {
     public void safeSetPower(double power, Gamepad gamepad) {
         if (gamepad.right_bumper) {
             ballIn = false;
+            cycles = 0;
         }
-        if (getTransferCurrent() < 0.5 && !ballIn) {
-            transfer.setPower(power);
+        if (getTransferCurrent() > 2) {
+            cycles = cycles +1;
         } else {
+            cycles = 0;
+        }
+        if (cycles>5) {
             ballIn = true;
+        }
+        if (!ballIn) {
+            transfer.setPower(power);
+        }
+        else {
             transfer.setPower(0);
         }
     }
