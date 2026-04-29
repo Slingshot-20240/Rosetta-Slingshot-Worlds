@@ -83,12 +83,13 @@ public class Intake {
             ballIn = false;
             cycles = 0;
         }
-        if (getTransferCurrent() > 2) {
-            cycles = cycles +1;
+        if (getTransferCurrent() > 4) {
+            cycles = cycles + 1;
         } else {
             cycles = 0;
+            ballIn = false;
         }
-        if (cycles>5) {
+        if (cycles > 5) {
             ballIn = true;
         }
         if (!ballIn) {

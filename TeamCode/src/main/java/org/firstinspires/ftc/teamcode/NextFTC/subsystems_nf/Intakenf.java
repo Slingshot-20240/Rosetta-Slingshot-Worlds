@@ -53,11 +53,12 @@ public class Intakenf implements Subsystem {
 
     @Override
     public void initialize() {
-        dropDownIntake = new MotorEx("dropIntake");
+        dropDownIntake = new MotorEx("dropdownIntake");
         transfer = new MotorEx("transfer");
+        transfer.reverse();
         intake = new MotorGroup(transfer, dropDownIntake);
 
-        pivotServo = new ServoEx("ps");
+        pivotServo = new ServoEx("pivotServo");
     }
 
     @Override

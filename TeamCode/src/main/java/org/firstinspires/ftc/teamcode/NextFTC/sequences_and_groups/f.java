@@ -17,7 +17,7 @@ public class f extends SubsystemGroup {
     public static final f i = new f();
 
     private f() {
-        super(Intakenf.INSTANCE);
+        super(Intakenf.INSTANCE, Stoppernf.INSTANCE);
     }
 
     public final Command follow(PathChain path) {
@@ -25,34 +25,19 @@ public class f extends SubsystemGroup {
                 new FollowPath(path)
         );
     }
-    public final Command follow(PathChain path, boolean open) {
-        return new ParallelGroup(
-                new IfElseCommand(
-                        () -> open,
-                        Stoppernf.INSTANCE.open(),
-                        Stoppernf.INSTANCE.close()
-                ),
-                new FollowPath(path)
-        );
-    }
 
-    public final Command follow(PathChain path, boolean open, boolean holdEnd) {
-        return new ParallelGroup(
-                new IfElseCommand(
-                    () -> open,
-                    Stoppernf.INSTANCE.open(),
-                    Stoppernf.INSTANCE.close()
-                ),
-                new FollowPath(path, holdEnd)
-        );
-    }
+//    public final Command follow(PathChain path, boolean holdEnd) {
+//        return new SequentialGroup(
+//                new FollowPath(path, holdEnd)
+//        );
+//    }
+
     public final Command follow(PathChain path, boolean holdEnd, double maxPower) {
         return new SequentialGroup(
                 new FollowPath(path, holdEnd, maxPower)
         );
     }
 
-    //--------STOPPER COMMANDS---------------------------------------------
 
 
 
