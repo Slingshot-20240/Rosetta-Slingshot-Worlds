@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 @Config
 @TeleOp(name="Limelight Test", group="test")
-public class AprilTagLimelightTest extends OpMode {
+public class AprilTagLimelightTest2 extends OpMode {
     private Limelight3A limelight;
     private Robot robot;
     private GamepadMapping controls;

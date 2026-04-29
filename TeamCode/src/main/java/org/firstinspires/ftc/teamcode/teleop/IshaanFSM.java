@@ -21,18 +21,19 @@ public class IshaanFSM {
     private final Stopper stopper;
     private final Shooter shooter;
 
-
     // --------------- MISC ---------------
-    public double lastVelo = 800;
-    public double lastHoodPos = 0.45; // default mid-range hood position
+    public double lastVelo = 1200;
+    public double lastHoodPos = 0.85;
     private ControlType savedType;
-    private double FAR_THRESHOLD = 110; // TODO tune threshold
 
-    // furthest forward for far shots
-    private double MAX_HOOD_POS = 0.1;
-    // furthest down for close shots
-    private double MIN_HOOD_POS = 0.6;
-    private double HOOD_OFFSET = 0.1; // TODO tune offset
+    private boolean lastDpadUp   = false;
+    private boolean lastDpadDown = false;
+    private double manualOffset  = 0.0;
+
+    private static final double HOOD_MIN        = 0.36;
+    private static final double HOOD_MAX        = 0.96;
+    private static final double VELOCITY_CORRECTION = 75;
+
 
     public IshaanFSM(HardwareMap hardwareMap, GamepadMapping gamepad, Robot robot) {
         this.robot = robot;
@@ -52,7 +53,7 @@ public class IshaanFSM {
             case BASE_STATE:
 
                 // Intake toggle
-                if (gamepad.intake.value()) {
+                if (gamepad.intake.locked()) {
                     intake.intakeTransferOnClose();
                     intake.pivotDown();
                 } else if (!gamepad.transfer.locked()) {
@@ -60,12 +61,12 @@ public class IshaanFSM {
                     intake.pivotUp();
                 }
 
-                // Stopper hold
+                // Stopper hold (PID mode only)
                 if (gamepad.transfer.locked() && type == ControlType.PID_CONTROL) {
                     intake.intakeTransferOnClose();
                     stopper.release();
                     intake.pivotDown();
-                } else {
+                } else if (type == ControlType.PID_CONTROL) {
                     stopper.stop();
                 }
 
@@ -74,40 +75,39 @@ public class IshaanFSM {
                     state = FSMStates.OUTTAKING;
                 }
 
-                // --------------- PID Only ---------------
+                // --------------- Shared dpad manual offset (both modes) ---------------
+                boolean dpadUpPressed   = gamepad.gamepad2.dpad_up   && !lastDpadUp;
+                boolean dpadDownPressed = gamepad.gamepad2.dpad_down && !lastDpadDown;
 
+                if (dpadUpPressed)   manualOffset += 0.05;
+                if (dpadDownPressed) manualOffset -= 0.05;
+
+                lastDpadUp   = gamepad.gamepad2.dpad_up;
+                lastDpadDown = gamepad.gamepad2.dpad_down;
+
+                // --------------- PID Only ---------------
                 if (type == ControlType.PID_CONTROL) {
 
-                    // --- Regression data points: {distanceInches, value} ---
-                    // Add more points from real shooting tests to improve accuracy
                     double[][] velocityPoints = {
-                            {60,  2800},
-                            {90,  3050},
-                            {120, 3300},
-                            {150, 3550},
-                            {180, 3800}
+                            {55,   1400},
+                            {72,   1600},
+                            {96.5, 1700}
                     };
 
                     double[][] hoodPoints = {
-                            {60,  0.30},
-                            {90,  0.45},
-                            {120, 0.58},
-                            {150, 0.70},
-                            {180, 0.80}
+                            {60,  0.64},
+                            {90,  0.64},
+                            {120, 0.64}
                     };
 
-                    // --- Linear regression ---
-                    double velocitySlope = calcSlope(velocityPoints);
+                    double velocitySlope     = calcSlope(velocityPoints);
                     double velocityIntercept = calcIntercept(velocityPoints, velocitySlope);
+                    double hoodSlope         = calcSlope(hoodPoints);
+                    double hoodIntercept     = calcIntercept(hoodPoints, hoodSlope);
 
-                    double hoodSlope = calcSlope(hoodPoints);
-                    double hoodIntercept = calcIntercept(hoodPoints, hoodSlope);
-
-                    // --- Get distance and compute setpoints ---
-                    double distance = Robot.limelight.getDistanceInches();
-
+                    double distance       = Robot.limelight.getDistanceInches();
                     double targetVelocity = velocitySlope * distance + velocityIntercept;
-                    double targetHoodPos  = hoodSlope    * distance + hoodIntercept;
+                    double targetHoodPos  = hoodSlope     * distance + hoodIntercept;
 
                     // --- Limelight dropout protection ---
                     if (distance != 0) {
@@ -115,24 +115,24 @@ public class IshaanFSM {
                         lastHoodPos = targetHoodPos;
                     }
 
+                    // --- Clamp hood position with manual offset ---
+                    double clampedHood = Math.max(HOOD_MIN, Math.min(HOOD_MAX, lastHoodPos + manualOffset));
+
                     if (Robot.limelight.getTargetArtifactTravelDistanceX() == 22) {
-                        // Tag not visible — hold last known setpoints
-                        robot.shooter.setHoodAngle(lastHoodPos);
-                        robot.shooter.setShooterVelocity(lastVelo);
+                        robot.shooter.setHoodAngle(clampedHood);
+                        robot.shooter.setShooterVelocity(lastVelo + 300 + VELOCITY_CORRECTION);
                     } else {
-                        robot.shooter.setHoodAngle(targetHoodPos);
-                        robot.shooter.setShooterVelocity(targetVelocity);
+                        robot.shooter.setHoodAngle(clampedHood);
+                        robot.shooter.setShooterVelocity(lastVelo + VELOCITY_CORRECTION);
                     }
                 }
 
-                // --------------- Hardcoded Only ---------------
+                // --------------- Mode Switch ---------------
                 if (gamepad.switchMode.value()) {
-                    // if saved is PID (in PID mode), switch to Hardcoded
                     if (savedType == ControlType.PID_CONTROL) {
                         type = ControlType.HARDCODED_CONTROL;
                         savedType = ControlType.HARDCODED_CONTROL;
                         gamepad.switchMode.set(false);
-                        // if saved is Hardcoded (in Hardcoded mode), switch to PID
                     } else if (savedType == ControlType.HARDCODED_CONTROL) {
                         type = ControlType.PID_CONTROL;
                         savedType = ControlType.PID_CONTROL;
@@ -140,23 +140,29 @@ public class IshaanFSM {
                     }
                 }
 
+                // --------------- Hardcoded Only ---------------
                 if (type == ControlType.HARDCODED_CONTROL) {
-                    shooter.shootFromFront();
-                    shooter.hoodToFront();
+                    double clampedHood = Math.max(HOOD_MIN, Math.min(HOOD_MAX, lastHoodPos + manualOffset));
+                    shooter.shootHardcoded();
+                    robot.shooter.setHoodAngle(clampedHood);
+
+                    // Shoot on right bumper hold
+                    if (gamepad.gamepad1.right_bumper) {
+                        intake.intakeTransferOnClose();
+                        stopper.release();
+                    } else {
+                        stopper.stop();
+                    }
                 }
 
                 if (gamepad.shootBack.locked() && type == ControlType.HARDCODED_CONTROL) {
-                    state = FSMStates.SHOOT_BACK;
-                }
-
-                if (gamepad.shootFront.locked() && type == ControlType.HARDCODED_CONTROL) {
-                    state = FSMStates.SHOOT_FRONT;
+                    state = FSMStates.HARDCODED;
                 }
 
                 break;
 
             case OUTTAKING:
-                intake.intakeTransferReverse();
+                robot.intake.intakeTransferReverse();
 
                 if (!gamepad.outtake.locked()) {
                     state = FSMStates.BASE_STATE;
@@ -164,37 +170,16 @@ public class IshaanFSM {
                 }
                 break;
 
-
-            // --------------- Hardcoded Only ---------------
-
-            case SHOOT_BACK:
-
-                shooter.shootFromBack();
-                shooter.hoodToBack();
+            case HARDCODED:
+                shooter.shootHardcoded();
+                shooter.setHoodAngle(0.9);
                 intake.intakeTransferOnClose();
-
                 stopper.stop();
 
                 if (!gamepad.shootBack.locked()) {
                     state = FSMStates.BASE_STATE;
                     gamepad.resetMultipleControls(gamepad.transfer);
                 }
-
-                break;
-
-            case SHOOT_FRONT:
-
-                intake.intakeTransferOnFar();
-                shooter.shootFromFront();
-                shooter.hoodToFront();
-
-                stopper.stop();
-
-                if (!gamepad.shootFront.locked()) {
-                    state = FSMStates.BASE_STATE;
-                    gamepad.resetMultipleControls(gamepad.shootBack, gamepad.shootFront, gamepad.transfer);
-                }
-
                 break;
         }
     }
@@ -217,8 +202,7 @@ public class IshaanFSM {
 
     public enum FSMStates {
         BASE_STATE,
-        SHOOT_FRONT,
-        SHOOT_BACK,
+        HARDCODED,
         OUTTAKING
     }
 

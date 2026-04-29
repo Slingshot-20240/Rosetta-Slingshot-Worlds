@@ -183,35 +183,41 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
 
     private Command autonomous() {
         return new ParallelGroup(
-                BaseShooternf.INSTANCE.setShooterVel(1030),
+                BaseShooternf.INSTANCE.setShooterVel(1100),
+                Intakenf.INSTANCE.in(),
                 new SequentialGroup(
-
-                        //Score Preloads
-                        new ParallelDeadlineGroup(
-                                f.i.follow(shootPreloads), //if no move on, check to see if open command finishes
-                                Stoppernf.INSTANCE.open()
-                        ),
-                        s.i.shoot(1),
+                        f.i.follow(shootPreloads),
+                        f.i.follow(grabMiddleSet),
+                        f.i.follow(shootMiddleSet),
 
 
-                        //Middle Set
-                        new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(grabMiddleSet),
-                                                Stoppernf.INSTANCE.open()
-                                        ),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootMiddleSet),
-                                                Stoppernf.INSTANCE.open()
-                                        )
-                                ),
-                                new SequentialGroup(
-                                        new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 2),
-                                        s.i.shoot(0.6)
-                                )
-                        ),
+//                        //Score Preloads
+//                        new ParallelDeadlineGroup(
+//                                f.i.follow(shootPreloads),
+//                                Stoppernf.INSTANCE.open()
+//                        ),
+//                        s.i.shoot(1),
+//
+//
+//                        new ParallelGroup(f.i.follow(grabMiddleSet), Intakenf.INSTANCE.in()),
+//                        //Middle Set
+//                        new ParallelGroup(
+//                                new SequentialGroup(
+//                                        new ParallelGroup(
+//                                                f.i.follow(grabMiddleSet),
+//                                                Stoppernf.INSTANCE.open()
+//                                        ),
+//                                        Intakenf.INSTANCE.off(),
+//                                        new ParallelGroup(
+//                                                f.i.follow(shootMiddleSet),
+//                                                Stoppernf.INSTANCE.open()
+//                                        )
+//                                ),
+//                                new SequentialGroup(
+//                                        new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 2),
+//                                        s.i.shoot(0.6)
+//                                )
+//                        ),
 
 
                         //Gate Cycles

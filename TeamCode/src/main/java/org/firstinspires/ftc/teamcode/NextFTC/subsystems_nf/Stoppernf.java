@@ -13,7 +13,7 @@ public class Stoppernf implements Subsystem {
     public ServoEx stopper;
 
     public Command open() {
-        return new SetPosition(stopper,0.55).requires(this);
+        return new SetPosition(stopper,0.53).requires(this);
     }
 
     public Command close() {

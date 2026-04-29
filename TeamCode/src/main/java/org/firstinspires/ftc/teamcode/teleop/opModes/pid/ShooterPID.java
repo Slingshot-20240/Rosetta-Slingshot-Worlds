@@ -55,7 +55,7 @@ public class ShooterPID extends OpMode {
     public void loop() {
         drivetrain.update();
         controls.update();
-        robot.intake.intakeTransferOnClose();
+        robot.intake.setIntakePower(1);
 
         outtake1.setVelocity(targetVel);
         outtake2.setVelocity(targetVel);
