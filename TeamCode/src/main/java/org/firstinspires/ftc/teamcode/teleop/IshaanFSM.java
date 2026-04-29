@@ -56,6 +56,10 @@ public class IshaanFSM {
                 if (gamepad.intake.locked()) {
                     intake.intakeTransferOnClose();
                     intake.pivotDown();
+
+                } else if (gamepad.gamepad1.left_trigger > 0) {
+                    intake.dropdownIntake.setPower(0.8);
+
                 } else if (!gamepad.transfer.locked()) {
                     intake.intakeTransferOff();
                     intake.pivotUp();
