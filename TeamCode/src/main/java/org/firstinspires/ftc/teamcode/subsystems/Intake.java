@@ -90,12 +90,12 @@ public class Intake {
             lowCycles = 0;
         } else {
             lowCycles = lowCycles + 1;
-            if (lowCycles > 10) {
+            if (lowCycles > 20) {
                 cycles = 0;
                 ballIn = false;
             }
         }
-        if (cycles > 5) {
+        if (cycles > 9) {
             ballIn = true;
         }
         if (!ballIn) {

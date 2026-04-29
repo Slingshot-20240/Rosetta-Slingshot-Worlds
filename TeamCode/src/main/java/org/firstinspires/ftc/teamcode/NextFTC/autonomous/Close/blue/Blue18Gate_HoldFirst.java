@@ -153,127 +153,128 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
     }
 
     private Command autonomous() {
-        return new SequentialGroup(
+        return new ParallelGroup(
+                BaseShooternf.INSTANCE.setShooterVel(1030),
+                new SequentialGroup(
 
-                //Score Preloads
-                new ParallelDeadlineGroup(
-                        f.i.follow(shootPreloads), //if no move on, check to see if open command finishes
-                        Stoppernf.INSTANCE.open(),
-                        BaseShooternf.INSTANCE.setShooterVel(1030)
-                ),
-                s.i.shoot(0.7),
-
-
-                //Middle Set
-                new ParallelGroup(
-                        new SequentialGroup(
-                                new ParallelGroup(
-                                        f.i.follow(grabMiddleSet),
-                                        Stoppernf.INSTANCE.open()
-                                ),
-                                new ParallelGroup(
-                                        f.i.follow(gateSet3),
-                                        Stoppernf.INSTANCE.close()
-
-                                ),
-                                Intakenf.INSTANCE.off(),
-                                new Delay(0.7),
-                                new ParallelGroup(
-                                        f.i.follow(shootMiddleSet),
-                                        Stoppernf.INSTANCE.open()
-                                )
-                        ),
-                        new SequentialGroup(
-                                new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 2),
-                                s.i.shoot(0.6)
-                        )
-                ),
+                    //Score Preloads
+                    new ParallelDeadlineGroup(
+                            f.i.follow(shootPreloads), //if no move on, check to see if open command finishes
+                            Stoppernf.INSTANCE.open()
+                    ),
+                    s.i.shoot(1),
 
 
-                //Gate Cycles
-                new ParallelGroup(
-                        new SequentialGroup(
-                                new ParallelGroup(
-                                        f.i.follow(gateIntake),
-                                        Stoppernf.INSTANCE.close()
-                                ),
-                                new Delay(1.4),
-                                Intakenf.INSTANCE.off(),
-                                new ParallelGroup(
-                                        f.i.follow(shootGate),
-                                        Stoppernf.INSTANCE.open()
+                    //Middle Set
+                    new ParallelGroup(
+                            new SequentialGroup(
+                                    new ParallelGroup(
+                                            f.i.follow(grabMiddleSet),
+                                            Stoppernf.INSTANCE.open()
+                                    ),
+                                    new ParallelGroup(
+                                            f.i.follow(gateSet3),
+                                            Stoppernf.INSTANCE.close()
 
-                                )
-                        ),
-
-                        new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                s.i.shoot(0.6)
-                        )
-                ),
-                new ParallelGroup(
-                        new SequentialGroup(
-                                new ParallelGroup(
-                                        f.i.follow(gateIntake),
-                                        Stoppernf.INSTANCE.close()
-                                ),
-                                new Delay(1.4),
-                                Intakenf.INSTANCE.off(),
-                                new ParallelGroup(
-                                        f.i.follow(shootGate),
-                                        Stoppernf.INSTANCE.open()
-
-                                )
-                        ),
-
-                        new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                s.i.shoot(0.6)
-                        )
-                ),
-                new ParallelGroup(
-                        new SequentialGroup(
-                                new ParallelGroup(
-                                        f.i.follow(gateIntake),
-                                        Stoppernf.INSTANCE.close()
-                                ),
-                                new Delay(1.4),
-                                Intakenf.INSTANCE.off(),
-                                new ParallelGroup(
-                                        f.i.follow(shootGate),
-                                        Stoppernf.INSTANCE.open()
-
-                                )
-                        ),
-
-                        new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                s.i.shoot(0.6)
-                        )
-                ),
+                                    ),
+                                    Intakenf.INSTANCE.off(),
+                                    new Delay(0.7),
+                                    new ParallelGroup(
+                                            f.i.follow(shootMiddleSet),
+                                            Stoppernf.INSTANCE.open()
+                                    )
+                            ),
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 2),
+                                    s.i.shoot(0.6)
+                            )
+                    ),
 
 
-                //Set2
-                new ParallelGroup(
-                        new SequentialGroup(
-                                new ParallelGroup(
-                                        f.i.follow(grabSet2),
-                                        Stoppernf.INSTANCE.close()
-                                ),
-                                Intakenf.INSTANCE.off(),
-                                new ParallelGroup(
-                                        f.i.follow(shootGate),
-                                        Stoppernf.INSTANCE.open()
-                                )
+                    //Gate Cycles
+                    new ParallelGroup(
+                            new SequentialGroup(
+                                    new ParallelGroup(
+                                            f.i.follow(gateIntake),
+                                            Stoppernf.INSTANCE.close()
+                                    ),
+                                    new Delay(1.4),
+                                    Intakenf.INSTANCE.off(),
+                                    new ParallelGroup(
+                                            f.i.follow(shootGate),
+                                            Stoppernf.INSTANCE.open()
 
-                        ),
+                                    )
+                            ),
 
-                        new SequentialGroup(
-                                new WaitUntil(() -> shootSet2.lastPath().getDistanceRemaining() < 2),
-                                s.i.shoot(0.6)
-                        )
-                )
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                    s.i.shoot(0.6)
+                            )
+                    ),
+                    new ParallelGroup(
+                            new SequentialGroup(
+                                    new ParallelGroup(
+                                            f.i.follow(gateIntake),
+                                            Stoppernf.INSTANCE.close()
+                                    ),
+                                    new Delay(1.4),
+                                    Intakenf.INSTANCE.off(),
+                                    new ParallelGroup(
+                                            f.i.follow(shootGate),
+                                            Stoppernf.INSTANCE.open()
 
+                                    )
+                            ),
+
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                    s.i.shoot(0.6)
+                            )
+                    ),
+                    new ParallelGroup(
+                            new SequentialGroup(
+                                    new ParallelGroup(
+                                            f.i.follow(gateIntake),
+                                            Stoppernf.INSTANCE.close()
+                                    ),
+                                    new Delay(1.4),
+                                    Intakenf.INSTANCE.off(),
+                                    new ParallelGroup(
+                                            f.i.follow(shootGate),
+                                            Stoppernf.INSTANCE.open()
+
+                                    )
+                            ),
+
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                    s.i.shoot(0.6)
+                            )
+                    ),
+
+
+                    //Set2
+                    new ParallelGroup(
+                            new SequentialGroup(
+                                    new ParallelGroup(
+                                            f.i.follow(grabSet2),
+                                            Stoppernf.INSTANCE.close()
+                                    ),
+                                    Intakenf.INSTANCE.off(),
+                                    new ParallelGroup(
+                                            f.i.follow(shootGate),
+                                            Stoppernf.INSTANCE.open()
+                                    )
+
+                            ),
+
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootSet2.lastPath().getDistanceRemaining() < 2),
+                                    s.i.shoot(0.6)
+                            )
+                    )
+            )
         );
     }
 
