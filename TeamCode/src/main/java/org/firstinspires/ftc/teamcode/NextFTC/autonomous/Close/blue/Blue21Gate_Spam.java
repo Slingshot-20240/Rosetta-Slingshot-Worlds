@@ -199,7 +199,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(grabMiddleSet),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.close()
                                         ),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
