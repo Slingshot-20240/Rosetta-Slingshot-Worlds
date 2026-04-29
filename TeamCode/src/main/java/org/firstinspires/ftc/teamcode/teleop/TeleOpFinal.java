@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.teleop.FSM;
@@ -19,16 +20,13 @@ public class TeleOpFinal extends OpMode {
     private Robot robot;
     private GamepadMapping controls;
     private FSM fsm;
-
     private Follower follower;
-    private Shooter shooter;
 
     @Override
     public void init() {
         controls = new GamepadMapping(gamepad1, gamepad2);
         robot    = new Robot(hardwareMap, controls);
         fsm      = new FSM(hardwareMap, controls, robot);
-        shooter  = new Shooter(hardwareMap);
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(PoseStorage.startingPose);
@@ -56,7 +54,7 @@ public class TeleOpFinal extends OpMode {
 
         if (gamepad1.a) {
             // Auto-align overrides rotate; follower handles axial/lateral
-            boolean aligned = Robot.limelight.autoAlign(forward, strafe);
+            boolean aligned = Robot.limelight.autoAlign(forward, strafe, gamepad1);
 
             // Still update follower with 0 rotate so Pedro doesn't fight the limelight
             follower.setTeleOpDrive(forward, strafe, 0, true);
@@ -74,6 +72,10 @@ public class TeleOpFinal extends OpMode {
             telemetry.addData("has target",        Robot.limelight.hasTarget());
             telemetry.addData("bearing (tX)",      Robot.limelight.getAngleBearing());
             telemetry.addData("distance (inches)", Robot.limelight.getDistanceInches());
+        }
+
+        if (Math.abs(Robot.limelight.getAngleBearing()) < 1.2 ) {
+
         }
 
         telemetry.addData("Control Type", fsm.getControlType());

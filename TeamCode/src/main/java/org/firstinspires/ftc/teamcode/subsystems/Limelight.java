@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -16,8 +17,8 @@ public class Limelight {
     private final DcMotor leftFront, rightFront, leftBack, rightBack;
 
     // PD tuning
-    public static double kP                      = 0.02;
-    public static double kD                      = 0.001;
+    public static double kP                      = 0.037;
+    public static double kD                      = 0.0011;
     public static double goalX                   = 0.0;
     public static double angleTolerance          = 0.4;
 
@@ -29,6 +30,7 @@ public class Limelight {
     private double lastTime  = 0;
 
     private LLResult lastResult = null;
+    private boolean wasAligned = false;
 
     public Limelight(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -123,10 +125,11 @@ public class Limelight {
      * Returns true if aligned, false if still correcting (or no target).
      * Call drive() instead if you want full manual control.
      */
-    public boolean autoAlign(double axial, double lateral) {
+    public boolean autoAlign(double axial, double lateral, Gamepad gamepad) {
         if (!hasTarget()) {
             mecanumDrive(axial, lateral, 0);
             lastError = 0;
+            wasAligned = false;
             return false;
         }
 
@@ -141,9 +144,19 @@ public class Limelight {
 
         if (Math.abs(error) > angleTolerance) {
             mecanumDrive(axial, lateral, yawPower);
+            wasAligned = false;
             return false;
         } else {
             mecanumDrive(axial, lateral, 0);
+
+            if (Math.abs(error) < 1.2) {
+                gamepad.rumble(0.8, 0.8, 400);
+            }
+//            if (!wasAligned) {
+//                gamepad.rumble(0.8, 0.8, 300); // left motor, right motor, duration (ms)
+//                wasAligned = true;
+//            }
+
             return true;
         }
     }

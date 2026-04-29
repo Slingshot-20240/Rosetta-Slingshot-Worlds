@@ -21,6 +21,7 @@ public class FSM {
     private final Stopper stopper;
     private final Shooter shooter;
 
+
     // --------------- MISC ---------------
     public double lastVelo = 800;
     private ControlType savedType;
@@ -75,6 +76,8 @@ public class FSM {
                 // --------------- PID Only ---------------
 
                 if (type == ControlType.PID_CONTROL) {
+
+
 
                     // variables
                     double distance = Robot.limelight.getTargetArtifactTravelDistanceX();

@@ -21,10 +21,12 @@ public class IntakeTest extends OpMode {
     public static double position = 0.72;
     private Intake intake;
     DcMotor leftFront, rightFront;
+    private GamepadMapping controls;
 
     @Override
     public void init() {
-        intake = new Intake(hardwareMap);
+        controls = new GamepadMapping(gamepad1, gamepad2);
+        intake = new Intake(hardwareMap, controls);
     }
 
     @Override

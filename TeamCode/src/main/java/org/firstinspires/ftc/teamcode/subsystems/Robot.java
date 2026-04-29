@@ -5,7 +5,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.teamcode.subsystems.vision.logi;
+
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 public class Robot {
@@ -31,6 +31,7 @@ public class Robot {
     // beambreaks            ---------------
 
     // MECHANISMS
+
     public final IMU imu;
     public Intake intake;
     public Stopper stopper;
@@ -57,18 +58,18 @@ public class Robot {
 
         //driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-        // limelight = new logi(hardwareMap);
+        limelight = new Limelight(hardwareMap);
 
-        intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap, controls);
         stopper = new Stopper(hardwareMap);
-        // shooter = new Shooter(hardwareMap);
+        shooter = new Shooter(hardwareMap);
 
 
         drivetrain = new Drivetrain(hardwareMap, imu, controls);
     }
 
     public Robot(GamepadMapping controls, IMU imu, GoBildaPinpointDriver pinpoint,
-                 logi cam, Intake intake, Stopper stopper, Shooter shooter, Drivetrain dt,
+                 Intake intake, Stopper stopper, Shooter shooter, Drivetrain dt,
                  DigitalChannel led0, DigitalChannel led1) {
         this.controls = controls;
         this.imu = imu;

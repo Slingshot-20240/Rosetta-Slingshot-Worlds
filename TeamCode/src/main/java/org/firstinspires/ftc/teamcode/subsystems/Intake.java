@@ -3,22 +3,31 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 public class Intake {
     public final DcMotorEx transfer;
     public final DcMotorEx dropdownIntake;
     public final Servo pivotServo;
 
-    public Intake(HardwareMap hardwareMap) {
+    private GamepadMapping controls;
+
+    private boolean ballIn = false;
+    public Intake(HardwareMap hardwareMap, GamepadMapping controls) {
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         transfer.setDirection(DcMotorSimple.Direction.REVERSE);
 
         dropdownIntake = hardwareMap.get(DcMotorEx.class, "dropdownIntake");
 
         pivotServo = hardwareMap.get(Servo.class, "pivotServo");
+
+        this.controls = controls;
     }
 
     // Constructor for JUnit
@@ -32,26 +41,26 @@ public class Intake {
 
     public void setIntakePower(double power) {
         dropdownIntake.setPower(power);
-        transfer.setPower(power);
+        safeSetPower(power, controls.gamepad1);
     }
     public void intakeTransferOnClose() {
         dropdownIntake.setPower(1);
-        transfer.setPower(1);
+        safeSetPower(1, controls.gamepad1);
     }
 
     public void intakeTransferOnFar() {
         dropdownIntake.setPower(1);
-        transfer.setPower(0.75);
+        safeSetPower(0.75, controls.gamepad1);
     }
 
     public void intakeTransferOff() {
-        transfer.setPower(0);
         dropdownIntake.setPower(0);
+        safeSetPower(0, controls.gamepad1);
     }
 
     public void intakeTransferReverse() {
         dropdownIntake.setPower(-1);
-        transfer.setPower(-1);
+        safeSetPower(-1, controls.gamepad1);
     }
 
     public void pivotUp() {
@@ -64,6 +73,20 @@ public class Intake {
 
     public void setPivotPos(double position) {
         pivotServo.setPosition(position);
+    }
+    public double getTransferCurrent() {
+        return transfer.getCurrent(CurrentUnit.AMPS);
+    }
+    public void safeSetPower(double power, Gamepad gamepad) {
+        if (gamepad.right_bumper) {
+            ballIn = false;
+        }
+        if (getTransferCurrent() < 0.5 && !ballIn) {
+            transfer.setPower(power);
+        } else {
+            ballIn = true;
+            transfer.setPower(0);
+        }
     }
 
 

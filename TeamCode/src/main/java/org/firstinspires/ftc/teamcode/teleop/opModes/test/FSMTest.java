@@ -5,6 +5,7 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
@@ -57,9 +58,11 @@ public class FSMTest extends OpMode {
 
         telemetry.addData("Control Type", fsm.getControlType());
         telemetry.addData("Switch value", controls.switchMode.value());
+        telemetry.addData("Current Transfer Draw (Amps)", robot.intake.getTransferCurrent());
 
-        shooter.setShooterVelocity(shooterVelocity);
-        shooter.setHoodAngle(hoodAngle);
+        //shooter.outtake1.setPower(1.0);
+        //shooter.outtake2.setPower(1.0);
+        //shooter.hoodToFront();
     }
 
     @Override

@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 @TeleOp(name = "Drivetrain Test", group = "test")
 public class DrivetrainTest extends LinearOpMode {
 
     private DcMotor leftFront, rightFront, leftBack, rightBack;
     private Intake intake;
+    private GamepadMapping controls;
 
 
     @Override
@@ -32,7 +34,8 @@ public class DrivetrainTest extends LinearOpMode {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        intake = new Intake(hardwareMap);
+        controls = new GamepadMapping(gamepad1, gamepad2);
+        intake = new Intake(hardwareMap, controls);
 
 
 

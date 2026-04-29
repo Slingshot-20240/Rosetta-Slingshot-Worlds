@@ -38,11 +38,11 @@ public class AutoAlignTest_Ishaan extends OpMode {
         // Driver inputs
         double axial   = -gamepad1.left_stick_y;
         double lateral =  gamepad1.left_stick_x;
-        double yaw     =  gamepad1.right_stick_x;
+        double yaw     =  gamepad1.right_stick_x * 0.55;
 
         if (gamepad1.a) {
             // Hold A: auto-align yaw, driver keeps axial/lateral control
-            boolean aligned = limelight.autoAlign(axial, lateral);
+            boolean aligned = limelight.autoAlign(axial, lateral, gamepad1);
 
             telemetry.addLine(">> AUTO ALIGNING (hold A)");
             telemetry.addData("aligned",           aligned);

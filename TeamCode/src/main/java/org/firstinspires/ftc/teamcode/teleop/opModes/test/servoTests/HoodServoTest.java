@@ -30,7 +30,7 @@ public class HoodServoTest extends OpMode {
     public void init() {
         controls = new GamepadMapping(gamepad1, gamepad2);
         robot = new Robot(hardwareMap, controls);
-        intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap, controls);
         variableHood = hardwareMap.get(Servo.class, "variableHood");
     }
 

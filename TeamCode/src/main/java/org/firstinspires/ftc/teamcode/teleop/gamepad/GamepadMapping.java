@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class GamepadMapping {
     // GAMEPADS
-    private final Gamepad gamepad1;
-    private final Gamepad gamepad2;
+    public final Gamepad gamepad1;
+    public final Gamepad gamepad2;
 
     // DRIVETRAIN
     // --------------
