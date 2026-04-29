@@ -131,21 +131,4 @@ public class TeleOpFinal extends OpMode {
         rightBack .setPower(rb / max);
     }
 
-    /** Full-power drive (no current limiting) — kept here if ever needed locally. */
-    private void mecanumDriveAutoAlign(double axial, double lateral, double yaw) {
-        double lf = axial + lateral + yaw;
-        double rf = axial - lateral - yaw;
-        double lb = axial - lateral + yaw;
-        double rb = axial + lateral - yaw;
-
-        double max = Math.max(1.0,
-                Math.max(Math.abs(lf),
-                        Math.max(Math.abs(rf),
-                                Math.max(Math.abs(lb), Math.abs(rb)))));
-
-        leftFront .setPower(lf / max);
-        rightFront.setPower(rf / max);
-        leftBack  .setPower(lb / max);
-        rightBack .setPower(rb / max);
-    }
 }

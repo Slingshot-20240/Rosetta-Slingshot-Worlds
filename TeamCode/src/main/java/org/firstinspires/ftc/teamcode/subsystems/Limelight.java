@@ -153,7 +153,7 @@ public class Limelight {
         } else {
             mecanumDriveAutoAlign(axial, lateral, 0);
 
-            if (Math.abs(error) < 1.2) {
+            if (Math.abs(error) < 1.7) {
                 gamepad.rumble(0.8, 0.8, 400);
             }
 
