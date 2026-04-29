@@ -42,27 +42,75 @@ public class Intake {
 //-------------------------------------------------------------------------------
 
     public void setIntakePower(double power) {
-        dropdownIntake.setPower(power);
-        safeSetPower(power, controls.gamepad1);
+        double intakePower = power;
+        double transferPower = power;
+
+        double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
+        if (intakeCurrent > 6) {
+            intakePower = intakePower * 0.65;
+        }
+        dropdownIntake.setPower(intakePower);
+
+        double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
+        if (transferCurrent > 6) {
+            transferPower = transferPower * 0.65;
+        }
+        transfer.setPower(transferPower);
     }
     public void intakeTransferOnClose() {
-        dropdownIntake.setPower(1);
-        safeSetPower(1, controls.gamepad1);
+        double intakePower = 1;
+        double transferPower = 1;
+
+        double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
+        if (intakeCurrent > 6) {
+            intakePower = intakePower * 0.65;
+        }
+        dropdownIntake.setPower(intakePower);
+
+        double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
+        if (transferCurrent > 6) {
+            transferPower = transferPower * 0.5;
+        }
+        transfer.setPower(transferPower);
     }
 
     public void intakeTransferOnFar() {
-        dropdownIntake.setPower(1);
-        safeSetPower(0.75, controls.gamepad1);
+        double intakePower = 1;
+        double transferPower = 0.75;
+
+        double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
+        if (intakeCurrent > 6) {
+            intakePower = intakePower * 0.65;
+        }
+        dropdownIntake.setPower(intakePower);
+
+        double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
+        if (transferCurrent > 6) {
+            transferPower = transferPower * 0.5;
+        }
+        transfer.setPower(transferPower);
     }
 
     public void intakeTransferOff() {
         dropdownIntake.setPower(0);
-        safeSetPower(0, controls.gamepad1);
+        transfer.setPower(0);
     }
 
     public void intakeTransferReverse() {
-        dropdownIntake.setPower(-1);
-        safeSetPower(-1, controls.gamepad1);
+        double intakePower = -1;
+        double transferPower = -1;
+
+        double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
+        if (intakeCurrent > 6) {
+            intakePower = intakePower * 0.5;
+        }
+        dropdownIntake.setPower(intakePower);
+
+        double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
+        if (transferCurrent > 6) {
+            transferPower = transferPower * 0.5;
+        }
+        transfer.setPower(transferPower);
     }
 
     public void pivotUp() {
@@ -70,7 +118,7 @@ public class Intake {
     }
 
     public void pivotDown() {
-        pivotServo.setPosition(0.9);
+        pivotServo.setPosition(0.88);
     }
 
     public void setPivotPos(double position) {

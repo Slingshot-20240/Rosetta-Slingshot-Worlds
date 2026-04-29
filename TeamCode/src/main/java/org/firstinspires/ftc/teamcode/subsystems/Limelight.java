@@ -4,9 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Config
@@ -14,11 +16,11 @@ public class Limelight {
 
     private final Limelight3A limelight;
 
-    private final DcMotor leftFront, rightFront, leftBack, rightBack;
+    private final DcMotorEx leftFront, rightFront, leftBack, rightBack;
 
     // PD tuning
-    public static double kP                      = 0.039; //0.037
-    public static double kD                      = 0.0012;
+    public static double kP                      = 0.032;
+    public static double kD                      = 0.0011;
     public static double goalX                   = 0.0;
     public static double angleTolerance          = 0.4;
 
@@ -36,10 +38,10 @@ public class Limelight {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
 
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftBack   = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack  = hardwareMap.get(DcMotorEx.class, "rightBack");
 
         leftFront .setDirection(DcMotor.Direction.REVERSE);
         leftBack  .setDirection(DcMotor.Direction.REVERSE);
@@ -76,6 +78,7 @@ public class Limelight {
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
+
     public double getTargetArtifactTravelDistanceX() {
         return getDistanceInches() + 22;
     }
@@ -111,7 +114,7 @@ public class Limelight {
     // -------------------------------------------------------------------------
 
     /**
-     * Full mecanum drive — call this every loop for normal driver control.
+     * Full mecanum drive with current limiting — call this every loop for normal driver control.
      * axial   = forward/back  (left stick Y, negated)
      * lateral = strafe        (left stick X)
      * yaw     = rotation      (right stick X)
@@ -122,12 +125,12 @@ public class Limelight {
 
     /**
      * Auto-align yaw toward the target while still allowing driver axial/lateral input.
+     * Runs at full power (no current limiting) so the correction is never throttled.
      * Returns true if aligned, false if still correcting (or no target).
-     * Call drive() instead if you want full manual control.
      */
     public boolean autoAlign(double axial, double lateral, Gamepad gamepad) {
         if (!hasTarget()) {
-            mecanumDrive(axial, lateral, 0);
+            mecanumDriveAutoAlign(axial, lateral, 0);
             lastError = 0;
             wasAligned = false;
             return false;
@@ -143,24 +146,20 @@ public class Limelight {
         lastError = error;
 
         if (Math.abs(error) > angleTolerance) {
-            mecanumDrive(axial, lateral, yawPower);
+            // FIX: use mecanumDriveAutoAlign so current limiting never throttles alignment
+            mecanumDriveAutoAlign(axial, lateral, yawPower);
             wasAligned = false;
             return false;
         } else {
-            mecanumDrive(axial, lateral, 0);
+            mecanumDriveAutoAlign(axial, lateral, 0);
 
-            if (Math.abs(error) < 1.2) {
+            if (Math.abs(error) < 1.7) {
                 gamepad.rumble(0.8, 0.8, 400);
             }
-//            if (!wasAligned) {
-//                gamepad.rumble(0.8, 0.8, 300); // left motor, right motor, duration (ms)
-//                wasAligned = true;
-//            }
 
             return true;
         }
     }
-
 
     /** Stop all drive motors. */
     public void stopDrive() {
@@ -171,7 +170,39 @@ public class Limelight {
     // Internal
     // -------------------------------------------------------------------------
 
+    /** Current-limited drive — used for normal driver control. */
     private void mecanumDrive(double axial, double lateral, double yaw) {
+        double lf = axial + lateral + yaw;
+        double rf = axial - lateral - yaw;
+        double lb = axial - lateral + yaw;
+        double rb = axial + lateral - yaw;
+
+        double max = Math.max(1.0,
+                Math.max(Math.abs(lf),
+                        Math.max(Math.abs(rf),
+                                Math.max(Math.abs(lb), Math.abs(rb)))));
+
+        double lfCurrent = leftFront.getCurrent(CurrentUnit.AMPS);
+        double rfCurrent = rightFront.getCurrent(CurrentUnit.AMPS);
+        double lbCurrent = leftBack.getCurrent(CurrentUnit.AMPS);
+        double rbCurrent = rightBack.getCurrent(CurrentUnit.AMPS);
+
+        double averageCurrent = (lfCurrent + rfCurrent + lbCurrent + rbCurrent) / 4;
+        if (averageCurrent > 6) {
+            lf *= 0.5;
+            rf *= 0.5;
+            lb *= 0.5;
+            rb *= 0.5;
+        }
+
+        leftFront .setPower(lf / max);
+        rightFront.setPower(rf / max);
+        leftBack  .setPower(lb / max);
+        rightBack .setPower(rb / max);
+    }
+
+    /** Full-power drive (no current limiting) — used for auto-align. */
+    private void mecanumDriveAutoAlign(double axial, double lateral, double yaw) {
         double lf = axial + lateral + yaw;
         double rf = axial - lateral - yaw;
         double lb = axial - lateral + yaw;

@@ -71,6 +71,8 @@ public class GamepadMapping {
         // SHOOTER - FOR HARDCODED ONLY
         shootBack.update(gamepad1.right_trigger >= 0.3);
         shootFront.update(gamepad1.right_bumper);
+
+
     }
 
     public void resetMultipleControls(Toggle... toggles) {
