@@ -34,8 +34,8 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
 @Autonomous(name = "Blue 18 Gate + Spam Gate")
-public class Blue21Gate_Spam extends NextFTCOpMode {
-    public Blue21Gate_Spam() {
+public class Blue18GateMoveSpam extends NextFTCOpMode {
+    public Blue18GateMoveSpam() {
         addComponents(
                 new SubsystemComponent(
                         f.i, s.i,
@@ -52,15 +52,15 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
     public Pose scorePose = new Pose(54, 94);
     public double scoreHeading = 137;
     // Gate Parameters ---------------------------------------------------------------
-    public Pose gatePose = new Pose(11.314, 60.731);
-    public double gateHeading = 135;
+    public Pose gatePose = new Pose(14.2, 62.731);
+    public double gateHeading = 155;
 
     public PathChain shootPreloads;
     public PathChain grabMiddleSet;
     public PathChain shootMiddleSet;
     public PathChain gateIntake;
+    public PathChain gateMove1;
     public PathChain shootGate;
-
     public PathChain grabSet2;
     public PathChain shootSet2;
 
@@ -137,7 +137,15 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                 )
 
                 .build();
+        gateMove1 = follower().pathBuilder().addPath(
+                        new BezierLine(
+                                new Pose(14.200, 62.731),
 
+                                new Pose(12.500, 53.967)
+                        )
+                ).setLinearHeadingInterpolation(Math.toRadians(155), Math.toRadians(142))
+
+                .build();
         shootGate = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.314, 60.731),
@@ -221,6 +229,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                                 f.i.follow(gateIntake),
                                                 Stoppernf.INSTANCE.close()
                                         ),
+                                        f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
@@ -241,6 +250,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                                 f.i.follow(gateIntake),
                                                 Stoppernf.INSTANCE.close()
                                         ),
+                                        f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
@@ -261,6 +271,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                                 f.i.follow(gateIntake),
                                                 Stoppernf.INSTANCE.close()
                                         ),
+                                        f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
@@ -281,6 +292,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                                 f.i.follow(gateIntake),
                                                 Stoppernf.INSTANCE.close()
                                         ),
+                                        f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(

@@ -86,6 +86,7 @@ public class TeleOpFinal extends OpMode {
 
         telemetry.addData("Control Type", fsm.getControlType());
         telemetry.addData("Switch value", controls.switchMode.value());
+        telemetry.addData("Total current",robot.shooter.outtake1.getCurrent(CurrentUnit.AMPS)+robot.shooter.outtake2.getCurrent(CurrentUnit.AMPS)+robot.intake.dropdownIntake.getCurrent(CurrentUnit.AMPS)+robot.intake.transfer.getCurrent(CurrentUnit.AMPS)+leftFront.getCurrent(CurrentUnit.AMPS)+leftBack.getCurrent(CurrentUnit.AMPS)+rightFront.getCurrent(CurrentUnit.AMPS)+rightBack.getCurrent(CurrentUnit.AMPS));
         telemetry.update();
     }
 

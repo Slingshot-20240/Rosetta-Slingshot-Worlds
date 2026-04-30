@@ -170,7 +170,7 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(grabMiddleSet),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.close()
                                     ),
                                     new ParallelGroup(
                                             f.i.follow(gateSet3),
