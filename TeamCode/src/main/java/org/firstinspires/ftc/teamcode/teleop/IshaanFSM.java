@@ -22,8 +22,8 @@ public class IshaanFSM {
     private final Shooter shooter;
 
     // --------------- MISC ---------------
-    public double lastVelo = 1200;
-    public double lastHoodPos = 0.85;
+    public double lastVelo = 1350; //1200
+    public double lastHoodPos = 0.94;
     private ControlType savedType;
 
     private boolean lastDpadUp   = false;
@@ -32,7 +32,7 @@ public class IshaanFSM {
 
     private static final double HOOD_MIN        = 0.36;
     private static final double HOOD_MAX        = 0.96;
-    private static final double VELOCITY_CORRECTION = 75;
+    private static double VELOCITY_CORRECTION = 35;
 
 
     public IshaanFSM(HardwareMap hardwareMap, GamepadMapping gamepad, Robot robot) {
@@ -53,8 +53,11 @@ public class IshaanFSM {
             case BASE_STATE:
 
                 // Intake toggle
-                if (gamepad.intake.locked()) {
+                if (gamepad.intakeTransfer.locked()) {
                     intake.intakeTransferOnClose();
+                    intake.pivotDown();
+                } else if (gamepad.intakeOnly.locked()) {
+                    intake.dropdownIntake.setPower(1.0);
                     intake.pivotDown();
                 } else if (!gamepad.transfer.locked()) {
                     intake.intakeTransferOff();
@@ -89,15 +92,21 @@ public class IshaanFSM {
                 if (type == ControlType.PID_CONTROL) {
 
                     double[][] velocityPoints = {
-                            {55,   1400},
-                            {72,   1600},
-                            {96.5, 1700}
+                            {45,   1250},
+                            {54,   1340},
+                            {65,   1380},
+                            {82,   1410},
+                            {100,  1600}
+
                     };
 
                     double[][] hoodPoints = {
-                            {60,  0.64},
-                            {90,  0.64},
-                            {120, 0.64}
+                            {45,  0.92},
+                            {54,  0.94},
+                            {65,  0.96},
+                            {82,  0.96},
+                            {100,  0.96}
+
                     };
 
                     double velocitySlope     = calcSlope(velocityPoints);
@@ -106,11 +115,11 @@ public class IshaanFSM {
                     double hoodIntercept     = calcIntercept(hoodPoints, hoodSlope);
 
                     double distance       = Robot.limelight.getDistanceInches();
-                    double targetVelocity = velocitySlope * distance + velocityIntercept;
+                    double targetVelocity = (velocitySlope * distance + velocityIntercept);
                     double targetHoodPos  = hoodSlope     * distance + hoodIntercept;
 
                     // --- Limelight dropout protection ---
-                    if (distance != 0) {
+                    if (distance != -1) {
                         lastVelo    = targetVelocity;
                         lastHoodPos = targetHoodPos;
                     }
@@ -144,7 +153,7 @@ public class IshaanFSM {
                 if (type == ControlType.HARDCODED_CONTROL) {
                     double clampedHood = Math.max(HOOD_MIN, Math.min(HOOD_MAX, lastHoodPos + manualOffset));
                     shooter.shootHardcoded();
-                    robot.shooter.setHoodAngle(clampedHood);
+                    robot.shooter.setHoodAngle(0.94);
 
                     // Shoot on right bumper hold
                     if (gamepad.gamepad1.right_bumper) {

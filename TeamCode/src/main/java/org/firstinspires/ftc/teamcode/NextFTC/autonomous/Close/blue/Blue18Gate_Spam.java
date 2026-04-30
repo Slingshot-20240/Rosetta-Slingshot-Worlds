@@ -27,6 +27,7 @@ import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
@@ -34,8 +35,8 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
 @Autonomous(name = "Blue 18 Gate + Spam Gate")
-public class Blue21Gate_Spam extends NextFTCOpMode {
-    public Blue21Gate_Spam() {
+public class Blue18Gate_Spam extends NextFTCOpMode {
+    public Blue18Gate_Spam() {
         addComponents(
                 new SubsystemComponent(
                         f.i, s.i,
@@ -52,14 +53,18 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
     public Pose scorePose = new Pose(54, 94);
     public double scoreHeading = 137;
     // Gate Parameters ---------------------------------------------------------------
-    public Pose gatePose = new Pose(11.314, 60.731);
-    public double gateHeading = 135;
+    public Pose gatePose = new Pose(12.5, 60.2);
+    public double gateHeading = 138;
 
     public PathChain shootPreloads;
     public PathChain grabMiddleSet;
     public PathChain shootMiddleSet;
-    public PathChain gateIntake;
-    public PathChain shootGate;
+    public PathChain gateIntake1;
+    public PathChain shootGate1;
+    public PathChain gateIntake2;
+    public PathChain shootGate2;
+    public PathChain gateIntake3;
+    public PathChain shootGate3;
 
     public PathChain grabSet2;
     public PathChain shootSet2;
@@ -111,7 +116,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
 
                 .build();
 
-        gateIntake = follower().pathBuilder().addPath(
+        gateIntake1 = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
                                 new Pose(22.357, 48.847),
@@ -135,10 +140,81 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
                                 )
                         )
                 )
+                .build();
+
+        shootGate1 = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                new Pose(11.314, 60.731),
+                                new Pose(22.357, 48.847),
+                                scorePose
+                        )
+                ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
 
                 .build();
 
-        shootGate = follower().pathBuilder().addPath(
+        gateIntake2 = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                scorePose,
+                                new Pose(22.357, 48.847),
+                                //Control point - may have to make it go around, kind of infront, and then push to gate
+                                gatePose
+                        )
+                ).setHeadingInterpolation(
+                        HeadingInterpolator.piecewise(
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0,
+                                        0.65,
+                                        HeadingInterpolator.linear(
+                                                Math.toRadians(scoreHeading),
+                                                Math.toRadians(gateHeading)
+                                        )
+                                ),
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0.65,
+                                        1.0,
+                                        HeadingInterpolator.constant(Math.toRadians(gateHeading))
+                                )
+                        )
+                )
+                .build();
+
+        shootGate2 = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                new Pose(11.314, 60.731),
+                                new Pose(22.357, 48.847),
+                                scorePose
+                        )
+                ).setConstantHeadingInterpolation(Math.toRadians(scoreHeading))
+
+                .build();
+
+        gateIntake3 = follower().pathBuilder().addPath(
+                        new BezierCurve(
+                                scorePose,
+                                new Pose(22.357, 48.847),
+                                //Control point - may have to make it go around, kind of infront, and then push to gate
+                                gatePose
+                        )
+                ).setHeadingInterpolation(
+                        HeadingInterpolator.piecewise(
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0,
+                                        0.65,
+                                        HeadingInterpolator.linear(
+                                                Math.toRadians(scoreHeading),
+                                                Math.toRadians(gateHeading)
+                                        )
+                                ),
+                                new HeadingInterpolator.PiecewiseNode(
+                                        0.65,
+                                        1.0,
+                                        HeadingInterpolator.constant(Math.toRadians(gateHeading))
+                                )
+                        )
+                )
+                .build();
+
+        shootGate3 = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(11.314, 60.731),
                                 new Pose(22.357, 48.847),
@@ -151,8 +227,8 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
         grabSet2 = follower().pathBuilder().addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(40.256, 83.257),
-                                new Pose(17, 83.257)
+                                new Pose(40.256, 80.257),
+                                new Pose(17, 80.257)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -160,7 +236,7 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
 
         shootSet2 = follower().pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(17, 83.257),
+                                new Pose(17, 80.257),
 
                                 new Pose(54.237, 108.727)
                         )
@@ -175,154 +251,85 @@ public class Blue21Gate_Spam extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.closeSide(),
+                Hoodnf.INSTANCE.setHoodPos(0.94),
                 Stoppernf.INSTANCE.close(),
                 Intakenf.INSTANCE.pivotDown()
         );
     }
 
     private Command autonomous() {
-        return new ParallelGroup(
-                BaseShooternf.INSTANCE.setShooterVel(1100),
-                Intakenf.INSTANCE.in(),
+        return new SequentialGroup(
                 new SequentialGroup(
-                        f.i.follow(shootPreloads),
-                        f.i.follow(grabMiddleSet),
-                        f.i.follow(shootMiddleSet),
+                        new ParallelDeadlineGroup(
+                                new FollowPath(shootPreloads),
+                                BaseShooternf.INSTANCE.setShooterVel(1400),
 
+                                Intakenf.INSTANCE.in()
+                        ),
+                        new Delay(0.5),
+                        s.i.shoot(0.7),
 
-//                        //Score Preloads
-//                        new ParallelDeadlineGroup(
-//                                f.i.follow(shootPreloads),
-//                                Stoppernf.INSTANCE.open()
-//                        ),
-//                        s.i.shoot(1),
-//
-//
-//                        new ParallelGroup(f.i.follow(grabMiddleSet), Intakenf.INSTANCE.in()),
-//                        //Middle Set
-//                        new ParallelGroup(
-//                                new SequentialGroup(
-//                                        new ParallelGroup(
-//                                                f.i.follow(grabMiddleSet),
-//                                                Stoppernf.INSTANCE.open()
-//                                        ),
-//                                        Intakenf.INSTANCE.off(),
-//                                        new ParallelGroup(
-//                                                f.i.follow(shootMiddleSet),
-//                                                Stoppernf.INSTANCE.open()
-//                                        )
-//                                ),
-//                                new SequentialGroup(
-//                                        new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 2),
-//                                        s.i.shoot(0.6)
-//                                )
-//                        ),
+                        //Middle
+                        new FollowPath(grabMiddleSet),
+                        new ParallelGroup(
+                                new FollowPath(shootMiddleSet),
 
+                                new SequentialGroup(
+                                        new WaitUntil(() -> shootMiddleSet.lastPath().getDistanceRemaining() < 0.2),
+                                        new Delay(0.4),
+                                        s.i.shoot(0.6)
+                                )
+                        ),
 
                         //Gate Cycles
+                        //Middle
+                        new FollowPath(gateIntake1),
+                        new Delay(1),
                         new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
-                                        ),
-                                        new Delay(1.4),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                            new FollowPath(shootGate1),
 
-                                        )
-                                ),
-
-                                new SequentialGroup(
-                                        new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                        s.i.shoot(0.6)
-                                )
+                            new SequentialGroup(
+                                    new WaitUntil(() -> shootGate1.lastPath().getDistanceRemaining() < 0.2),
+                                    new Delay(0.4),
+                                    s.i.shoot(0.6)
+                            )
                         ),
+
+                        new FollowPath(gateIntake2),
+                        new Delay(1),
                         new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
-                                        ),
-                                        new Delay(1.4),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
-
-                                        )
-                                ),
+                                new FollowPath(shootGate2),
 
                                 new SequentialGroup(
-                                        new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                        s.i.shoot(0.6)
-                                )
-                        ),
-                        new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
-                                        ),
-                                        new Delay(1.4),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
-
-                                        )
-                                ),
-
-                                new SequentialGroup(
-                                        new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
-                                        s.i.shoot(0.6)
-                                )
-                        ),
-                        new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
-                                        ),
-                                        new Delay(1.4),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
-
-                                        )
-                                ),
-
-                                new SequentialGroup(
-                                        new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                        new WaitUntil(() -> shootGate2.lastPath().getDistanceRemaining() < 0.2),
+                                        new Delay(0.4),
                                         s.i.shoot(0.6)
                                 )
                         ),
 
-
-                        //Set2
+                        new FollowPath(gateIntake3),
+                        new Delay(1),
                         new ParallelGroup(
-                                new SequentialGroup(
-                                        new ParallelGroup(
-                                                f.i.follow(grabSet2),
-                                                Stoppernf.INSTANCE.close()
-                                        ),
-                                        Intakenf.INSTANCE.off(),
-                                        new ParallelGroup(
-                                                f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
-                                        )
-
-                                ),
+                                new FollowPath(shootGate3),
 
                                 new SequentialGroup(
-                                        new WaitUntil(() -> shootSet2.lastPath().getDistanceRemaining() < 2),
+                                        new WaitUntil(() -> shootGate3.lastPath().getDistanceRemaining() < 0.2),
+                                        new Delay(0.4),
+                                        s.i.shoot(0.6)
+                                )
+                        ),
+
+                        new FollowPath(grabSet2),
+                        new ParallelGroup(
+                                new FollowPath(shootSet2),
+
+                                new SequentialGroup(
+                                        new WaitUntil(() -> shootSet2.lastPath().getDistanceRemaining() < 0.2),
+                                        new Delay(0.5),
                                         s.i.shoot(0.6)
                                 )
                         )
+
                 )
         );
     }

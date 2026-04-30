@@ -19,8 +19,8 @@ public class Limelight {
     private final DcMotorEx leftFront, rightFront, leftBack, rightBack;
 
     // PD tuning
-    public static double kP                      = 0.032;
-    public static double kD                      = 0.0011;
+    public static double kP                      = 0.036;
+    public static double kD                      = 0.0008;
     public static double goalX                   = 0.0;
     public static double angleTolerance          = 0.4;
 

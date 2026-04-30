@@ -16,6 +16,9 @@ public class AutoAlignTest_Ishaan extends OpMode {
     private Limelight limelight;
     private Robot              robot;
     private GamepadMapping     controls;
+    public static int shooterVel = 900;
+    public static double hoodAngle = 0.5;
+
 
     @Override
     public void init() {
@@ -63,6 +66,9 @@ public class AutoAlignTest_Ishaan extends OpMode {
         }
 
         telemetry.update();
+        robot.shooter.setShooterVelocity(shooterVel);
+        robot.intake.intakeTransferOnClose();
+        robot.shooter.setHoodAngle(hoodAngle);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class FSM {
             case BASE_STATE:
 
                 // Intake toggle
-                if (gamepad.intake.value()) {
+                if (gamepad.intakeTransfer.value()) {
                     intake.intakeTransferOnClose();
                     intake.pivotDown();
                 } else if (!gamepad.transfer.locked()) {

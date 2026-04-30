@@ -15,8 +15,8 @@ public class Shooter {
     public Shooter(HardwareMap hardwareMap) {
         outtake1 = hardwareMap.get(DcMotorEx.class, "ol"); //outtake left
         outtake2 = hardwareMap.get(DcMotorEx.class, "or"); //outtake right
-        outtake1.setVelocityPIDFCoefficients(600, 0, 0, 100);
-        outtake2.setVelocityPIDFCoefficients(600, 0, 0, 100);
+        outtake1.setVelocityPIDFCoefficients(1000, 0, 0, 12);
+        outtake2.setVelocityPIDFCoefficients(1000, 0, 0, 12);
         outtake2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         variableHood = hardwareMap.get(Servo.class, "variableHood");
@@ -33,7 +33,7 @@ public class Shooter {
         HARDCODED_SHOOT_FRONT(1300),
         // 5.954
         HARDCODED_SHOOT_BACK(1400),
-        HARDCODED(1400),
+        HARDCODED(1350),
         IDLE(0);
 
         private final double outtake_vels;

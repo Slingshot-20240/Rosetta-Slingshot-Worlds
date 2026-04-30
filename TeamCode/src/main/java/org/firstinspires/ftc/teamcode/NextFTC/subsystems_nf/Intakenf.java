@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -18,16 +20,21 @@ public class Intakenf implements Subsystem {
 
     private Intakenf() { }
 
+
     public MotorEx transfer;
     public MotorEx dropDownIntake;
     MotorGroup intake;
     public ServoEx pivotServo;
+
 
 //-------------------------------------------------------------------------------
 
 
     public Command in() {
         return new SetPower(intake, 0.9);
+    }
+    public Command in(double seconds) {
+        return new SetPower(intake, 0.9).asDeadline(new Delay(seconds));
     }
 
     public Command off() {
@@ -48,6 +55,7 @@ public class Intakenf implements Subsystem {
     public Command pivotDown() {
         return new InstantCommand(() -> pivotServo.getServo().setPosition(0.9));
     }
+
 
 //-------------------------------------------------------------------------------
 

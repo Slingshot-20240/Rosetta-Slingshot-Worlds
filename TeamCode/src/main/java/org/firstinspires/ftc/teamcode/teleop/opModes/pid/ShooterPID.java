@@ -22,10 +22,7 @@ public class ShooterPID extends OpMode {
 //test
     DcMotorEx outtake1;
     DcMotorEx outtake2;
-    //public static double p1 = 150, i1 = 0.0, d1 = 0.0, f1 = 20;
-    public static double p1 = 185, i1 = 0.0, d1 = 0.0, f1 = 32;
-    public static int targetVel = 1095;
-    public static double hoodAngle = 0.5;
+    public static double p1 = 0, i1 = 0.0, d1 = 0.0, f1 = 15;
     private Telemetry dashboardTelemetry;
     Robot robot;
     GamepadMapping controls;
@@ -38,8 +35,8 @@ public class ShooterPID extends OpMode {
         outtake2 = hardwareMap.get(DcMotorEx.class, "or");
  
         // Set PIDF (start with defaults, tune later)
-        outtake1.setVelocityPIDFCoefficients(578, 0, 0, 70);
-        outtake2.setVelocityPIDFCoefficients(578, 0, 0, 70);
+        outtake1.setVelocityPIDFCoefficients(p1, i1, d1, f1);
+        outtake2.setVelocityPIDFCoefficients(p1, i1, d1, f1);
         controls = new GamepadMapping(gamepad1, gamepad2);
         robot = new Robot(hardwareMap, controls);
 
@@ -55,27 +52,30 @@ public class ShooterPID extends OpMode {
     public void loop() {
         drivetrain.update();
         controls.update();
-        robot.intake.setIntakePower(1);
+//        robot.intake.setIntakePower(1);
 
-        outtake1.setVelocity(targetVel);
-        outtake2.setVelocity(targetVel);
+        if (gamepad1.left_bumper) {
+            outtake1.setVelocity(900);
+            outtake2.setVelocity(900);
+            dashboardTelemetry.addData("Target (ticks/s): ", 900);
+
+        } else {
+            outtake1.setVelocity(1600);
+            outtake2.setVelocity(1600);
+            dashboardTelemetry.addData("Target (ticks/s): ", 1600);
+        }
         outtake1.setVelocityPIDFCoefficients(p1, i1, d1, f1);
         outtake2.setVelocityPIDFCoefficients(p1, i1, d1, f1);
-        robot.shooter.variableHood.setPosition(hoodAngle);
-
-
 
         // Read actual velocity
         double actualVel1 = outtake1.getVelocity();
         double actualVel2 = outtake2.getVelocity();
 
-
         // Telemetry
-        dashboardTelemetry.addData("Target (ticks/s): ", targetVel);
         dashboardTelemetry.addData("Actual1 (ticks/s): ", actualVel1);
         dashboardTelemetry.addData("Actual2 (ticks/s): ", actualVel2);
-        dashboardTelemetry.addData("Encoder1:", outtake1.getCurrentPosition());
-        dashboardTelemetry.addData("Encoder2:", outtake2.getCurrentPosition());
+//        dashboardTelemetry.addData("Encoder1:", outtake1.getCurrentPosition());
+//        dashboardTelemetry.addData("Encoder2:", outtake2.getCurrentPosition());
         dashboardTelemetry.update();
 
 

@@ -36,7 +36,7 @@ public class HoodServoTest extends OpMode {
 
     @Override
     public void loop() {
-//        intake.intakeTransferOn();
+//        intakeTransfer.intakeTransferOn();
 //        controls.update();
 //        //robot.drivetrain.update();
 //
@@ -51,8 +51,8 @@ public class HoodServoTest extends OpMode {
 //        telemetry.update();
         //}
         // left bumper
-//        if (controls.intake.value()) {
-//            robot.intake.intakeOn();
+//        if (controls.intakeTransfer.value()) {
+//            robot.intakeTransfer.intakeOn();
 //        }
     }
 }

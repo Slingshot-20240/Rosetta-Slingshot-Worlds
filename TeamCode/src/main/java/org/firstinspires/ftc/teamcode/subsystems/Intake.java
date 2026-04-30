@@ -47,13 +47,13 @@ public class Intake {
 
         double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
         if (intakeCurrent > 6) {
-            intakePower = intakePower * 0.65;
+            intakePower = intakePower * 0.8;
         }
         dropdownIntake.setPower(intakePower);
 
         double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
         if (transferCurrent > 6) {
-            transferPower = transferPower * 0.65;
+            transferPower = transferPower * 0.8;
         }
         transfer.setPower(transferPower);
     }
@@ -63,13 +63,13 @@ public class Intake {
 
         double intakeCurrent = dropdownIntake.getCurrent(CurrentUnit.AMPS);
         if (intakeCurrent > 6) {
-            intakePower = intakePower * 0.65;
+            intakePower = intakePower * 0.8;
         }
         dropdownIntake.setPower(intakePower);
 
         double transferCurrent = transfer.getCurrent(CurrentUnit.AMPS);
         if (transferCurrent > 6) {
-            transferPower = transferPower * 0.5;
+            transferPower = transferPower * 0.8;
         }
         transfer.setPower(transferPower);
     }

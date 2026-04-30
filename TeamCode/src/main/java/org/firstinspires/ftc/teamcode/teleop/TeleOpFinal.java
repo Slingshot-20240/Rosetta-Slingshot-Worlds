@@ -1,30 +1,24 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.NextFTC.autonomous.PoseStorage;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Limelight;
+
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.teleop.FSM;
+
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 @Config
 @TeleOp(name="ASling TeleOp Final")
 public class TeleOpFinal extends OpMode {
     private Robot robot;
-    private GamepadMapping controls;
-    private IshaanFSM fsm;
+    public GamepadMapping controls;
+    IshaanFSM fsm;
     private DcMotorEx leftFront, rightFront, leftBack, rightBack;
 
 
@@ -63,11 +57,11 @@ public class TeleOpFinal extends OpMode {
         YawPitchRollAngles orientation = robot.imu.getRobotYawPitchRollAngles();
         Robot.limelight.update(orientation);
 
-        double forward = -gamepad1.left_stick_y;
-        double strafe  = gamepad1.left_stick_x;
-        double rotate  = gamepad1.right_stick_x * 0.75;
+        double forward = -Math.pow(gamepad1.left_stick_y, 3);
+        double strafe  = Math.pow(gamepad1.left_stick_x, 3);
+        double rotate  = Math.pow(gamepad1.right_stick_x, 3);
 
-        if (gamepad1.a) {
+        if (gamepad1.right_trigger > 0) {
             // FIX: autoAlign() already drives the motors internally (full power, no current limit).
             // Do NOT call mecanumDriveAutoAlign() here as well — that would overwrite the yaw
             // correction that autoAlign just applied, breaking the alignment entirely.
@@ -119,10 +113,15 @@ public class TeleOpFinal extends OpMode {
 
         double averageCurrent = (lfCurrent + rfCurrent + lbCurrent + rbCurrent) / 4;
         if (averageCurrent > 6) {
-            lf *= 0.5;
-            rf *= 0.5;
-            lb *= 0.5;
-            rb *= 0.5;
+            lf *= 0.7;
+            rf *= 0.7;
+            lb *= 0.7;
+            rb *= 0.7;
+        } else {
+            lf *= 1.0;
+            rf *= 1.0;
+            lb *= 1.0;
+            rb *= 1.0;
         }
 
         leftFront .setPower(lf / max);

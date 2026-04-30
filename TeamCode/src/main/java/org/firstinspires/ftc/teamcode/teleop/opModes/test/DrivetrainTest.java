@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 @TeleOp(name = "Drivetrain Test", group = "test")
 public class DrivetrainTest extends LinearOpMode {
 
-    private DcMotor leftFront, rightFront, leftBack, rightBack;
+    private DcMotorEx leftFront, rightFront, leftBack, rightBack;
     private Intake intake;
     private GamepadMapping controls;
 
@@ -20,10 +21,10 @@ public class DrivetrainTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftBack   = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack  = hardwareMap.get(DcMotorEx.class, "rightBack");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,17 +77,9 @@ public class DrivetrainTest extends LinearOpMode {
             telemetry.addData("Front Right Power", "%.2f", frPower);
             telemetry.addData("Back  Left  Power", "%.2f", blPower);
             telemetry.addData("Back  Right Power", "%.2f", brPower);
+            telemetry.addData("real power", rightBack.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("Slow Mode", gamepad1.right_bumper ? "ON" : "OFF");
             telemetry.update();
-
-
-            if (gamepad1.left_trigger > 0) {
-                intake.intakeTransferOnClose();
-                intake.pivotDown();
-            } else {
-                intake.intakeTransferOff();
-                intake.pivotUp();
-            }
         }
     }
 }

@@ -159,12 +159,12 @@ public class BlueHpCycle extends NextFTCOpMode {
                                 f.i.follow(gateIntake, false),
                                 new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
-                                f.i.follow(shootGate, true)
+                                f.i.follow(shootGate1, true)
 
                         ),
 
                         new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                new WaitUntil(() -> shootGate1.lastPath().getDistanceRemaining() < 2),
                                 s.i.shoot(0.6)
                         )
                 ),
@@ -173,12 +173,12 @@ public class BlueHpCycle extends NextFTCOpMode {
                                 f.i.follow(gateIntake, false),
                                 new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
-                                f.i.follow(shootGate, true)
+                                f.i.follow(shootGate1, true)
 
                         ),
 
                         new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                new WaitUntil(() -> shootGate1.lastPath().getDistanceRemaining() < 2),
                                 s.i.shoot(0.6)
                         )
                 ),
@@ -187,12 +187,12 @@ public class BlueHpCycle extends NextFTCOpMode {
                                 f.i.follow(gateIntake, false),
                                 new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
-                                f.i.follow(shootGate, true)
+                                f.i.follow(shootGate1, true)
 
                         ),
 
                         new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                new WaitUntil(() -> shootGate1.lastPath().getDistanceRemaining() < 2),
                                 s.i.shoot(0.6)
                         )
                 ),
@@ -203,12 +203,12 @@ public class BlueHpCycle extends NextFTCOpMode {
                                 f.i.follow(gateIntake, false),
                                 new Delay(1.4),
                                 Intakenf.INSTANCE.off(),
-                                f.i.follow(shootGate, true)
+                                f.i.follow(shootGate1, true)
 
                         ),
 
                         new SequentialGroup(
-                                new WaitUntil(() -> shootGate.lastPath().getDistanceRemaining() < 2),
+                                new WaitUntil(() -> shootGate1.lastPath().getDistanceRemaining() < 2),
                                 s.i.shoot(0.6)
                         )
                 ),
@@ -219,7 +219,7 @@ public class BlueHpCycle extends NextFTCOpMode {
                         new SequentialGroup(
                                 f.i.follow(grabSet2, false),
                                 Intakenf.INSTANCE.off(),
-                                f.i.follow(shootGate, true)
+                                f.i.follow(shootGate1, true)
 
                         ),
 

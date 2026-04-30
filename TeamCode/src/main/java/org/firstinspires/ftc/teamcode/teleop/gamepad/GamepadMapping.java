@@ -14,7 +14,8 @@ public class GamepadMapping {
     public static double turn = 0.0;
 
     // INTAKE
-    public Toggle intake;
+    public Toggle intakeTransfer;
+    public Toggle intakeOnly;
 
     // SHOOTER - GP2
     public Toggle shootBack;
@@ -32,7 +33,8 @@ public class GamepadMapping {
         this.gamepad2 = gamepad2;
 
         // INTAKE
-        intake = new Toggle(false);
+        intakeTransfer = new Toggle(false);
+        intakeOnly = new Toggle(false);
 
         // SHOOTER
         shootBack = new Toggle(false);
@@ -57,7 +59,8 @@ public class GamepadMapping {
         //Auto align - Right Trigger
         //Mecanum override - Left Trigger
         // INTAKE
-        intake.update(gamepad1.left_bumper);
+        intakeTransfer.update(gamepad1.left_bumper);
+        intakeOnly.update(gamepad1.left_trigger > 0);
 
         // TRANSFER
         transfer.update(gamepad1.right_bumper);

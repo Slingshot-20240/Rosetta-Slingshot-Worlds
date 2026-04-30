@@ -204,7 +204,7 @@ public class fsmTests {
     public void baseIntakeOn() {
         // inject mocks
         when(intakeControl.locked()).thenReturn(true);
-        controls.intake = intakeControl;
+        controls.intakeTransfer = intakeControl;
 
         // set up states
         fsm.setControlType(FSM.ControlType.HARDCODED_CONTROL);
@@ -219,7 +219,7 @@ public class fsmTests {
     public void baseIntakeOff() {
         // inject mocks
         when(intakeControl.locked()).thenReturn(false);
-        controls.intake = intakeControl;
+        controls.intakeTransfer = intakeControl;
 
         // set up states
         fsm.setControlType(FSM.ControlType.HARDCODED_CONTROL);

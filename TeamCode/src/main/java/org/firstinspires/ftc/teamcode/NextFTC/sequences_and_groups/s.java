@@ -13,7 +13,9 @@ import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Stoppernf;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.delays.WaitUntil;
+import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.groups.ParallelRaceGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.subsystems.SubsystemGroup;
 
@@ -69,12 +71,12 @@ public class s extends SubsystemGroup {
      */
     public Command shoot(double shootTime) {
         return new ParallelGroup(
-                Intakenf.INSTANCE.in(),
                 new SequentialGroup(
                         Stoppernf.INSTANCE.open(),
                         new Delay(shootTime),
                         Stoppernf.INSTANCE.close()
-                )
+                ),
+                Intakenf.INSTANCE.in()
         );
     }
 
