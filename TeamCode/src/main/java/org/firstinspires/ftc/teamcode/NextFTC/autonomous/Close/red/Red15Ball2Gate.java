@@ -34,7 +34,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @Config
-@Autonomous(name = "Red 15 + 3 Gate")
+@Autonomous(name = "Red 15 + 2 Gate")
 public class Red15Ball2Gate extends NextFTCOpMode {
     public Red15Ball2Gate() {
         addComponents(

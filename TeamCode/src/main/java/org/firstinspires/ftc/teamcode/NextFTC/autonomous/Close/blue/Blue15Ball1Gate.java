@@ -48,7 +48,6 @@ public class Blue15Ball1Gate extends NextFTCOpMode {
         );
     }
 
-
     // Score Parameters ---------------------------------------------------------------
     public Pose scorePose = new Pose(53.5, 94);
     public double scoreHeading = 138;
@@ -56,8 +55,7 @@ public class Blue15Ball1Gate extends NextFTCOpMode {
     public Pose gatePose = new Pose(14, 62.731);;
     public double gateHeading = 158.5;
 
-    //Paths
-
+    // Paths ---------------------------------------------------------------
     public PathChain shootPreloads;
     public PathChain grabMiddleSet;
     public PathChain shootMiddleSet;

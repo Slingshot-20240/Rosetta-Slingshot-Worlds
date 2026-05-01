@@ -34,7 +34,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @Config
-@Autonomous(name = "Move Red 18 Gate + Spam Gate")
+@Autonomous(name = "Move Spam Red 18 Gate")
 public class Red18GateMoveSpam extends NextFTCOpMode {
     public Red18GateMoveSpam() {
         addComponents(
@@ -51,10 +51,10 @@ public class Red18GateMoveSpam extends NextFTCOpMode {
 
     // Score Parameters ---------------------------------------------------------------
     public Pose scorePose = new Pose(53.5, 94).mirror();
-    public double scoreHeading = 180-137;
+    public double scoreHeading = 180-138;
     // Gate Parameters ---------------------------------------------------------------
-    public Pose gatePose = new Pose(12.7, 62.731).mirror();;
-    public double gateHeading = 180-155;
+    public Pose gatePose = new Pose(14, 62.731).mirror();
+    public double gateHeading = 180-158.5;
 
     public PathChain shootPreloads;
     public PathChain grabMiddleSet;
