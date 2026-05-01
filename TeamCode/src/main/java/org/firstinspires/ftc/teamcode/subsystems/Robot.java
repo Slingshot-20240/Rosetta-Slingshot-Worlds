@@ -34,7 +34,7 @@ public class Robot {
 
     public final IMU imu;
     public Intake intake;
-    public Stopper stopper;
+//    public Stopper stopper;
     public Shooter shooter;
     public Drivetrain drivetrain;
 
@@ -61,7 +61,7 @@ public class Robot {
         limelight = new Limelight(hardwareMap);
 
         intake = new Intake(hardwareMap, controls);
-        stopper = new Stopper(hardwareMap);
+//        stopper = new Stopper(hardwareMap);
         shooter = new Shooter(hardwareMap);
 
 
@@ -75,7 +75,7 @@ public class Robot {
         this.imu = imu;
         //this.driver = pinpoint;
         this.intake = intake;
-        this.stopper = stopper;
+//        this.stopper = stopper;
         this.shooter = shooter;
         this.drivetrain = dt;
         this.ledBoard0 = led0;

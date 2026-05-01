@@ -13,9 +13,7 @@ import org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf.Stoppernf;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.delays.WaitUntil;
-import dev.nextftc.core.commands.groups.ParallelDeadlineGroup;
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.commands.groups.ParallelRaceGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.subsystems.SubsystemGroup;
 
@@ -72,11 +70,12 @@ public class s extends SubsystemGroup {
     public Command shoot(double shootTime) {
         return new ParallelGroup(
                 new SequentialGroup(
-                        Stoppernf.INSTANCE.open(),
+                        Stoppernf.INSTANCE.release(),
                         new Delay(shootTime),
-                        Stoppernf.INSTANCE.close()
+                        Stoppernf.INSTANCE.stop()
                 ),
-                Intakenf.INSTANCE.in()
+                Intakenf.INSTANCE.in(),
+                Intakenf.INSTANCE.pivotDown()
         );
     }
 
@@ -93,11 +92,11 @@ public class s extends SubsystemGroup {
                 new SequentialGroup(
                         Intakenf.INSTANCE.setIntakePower(transferSpeed),
 
-                        Stoppernf.INSTANCE.open(),
+                        Stoppernf.INSTANCE.release(),
                         new Delay(shootTime),
 
                         new ParallelGroup(
-                                Stoppernf.INSTANCE.close(),
+                                Stoppernf.INSTANCE.stop(),
                                 Intakenf.INSTANCE.in()
                         )
                 )
@@ -113,7 +112,7 @@ public class s extends SubsystemGroup {
     public Command shooterState(double velocity) {
         return new ParallelGroup(
                 BaseShooternf.INSTANCE.setShooterVel(velocity),
-                Hoodnf.INSTANCE.setHoodPos(0.3)
+                Hoodnf.INSTANCE.closeSide()
         );
     }
 

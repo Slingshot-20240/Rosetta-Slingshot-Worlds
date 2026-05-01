@@ -2,24 +2,25 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class Stopper {
-    public final Servo stopper;
+    public final ServoImplEx stopper;
 
     public Stopper(HardwareMap hardwareMap) {
-        stopper = hardwareMap.get(Servo.class, "stopper");
+        stopper = hardwareMap.get(ServoImplEx.class, "stopper");
     }
 
-    public Stopper(Servo stopper) {
+    public Stopper(ServoImplEx stopper) {
         this.stopper = stopper;
     }
 // ------------------------------------------------------------------
 
     public void release() {
-        stopper.setPosition(0.55);
+        stopper.setPosition(0.9);
     }
     public void stop() {
-        stopper.setPosition(0.32);
+        stopper.setPosition(0.7);
     }
 }
 

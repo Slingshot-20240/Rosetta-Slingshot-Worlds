@@ -5,28 +5,32 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
-
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
+import dev.frozenmilk.sinister.util.flag.Test;
+
 @Config
-@TeleOp(name="ASling TeleOp Final")
-public class TeleOpFinal extends OpMode {
-    private Robot robot;
-    public GamepadMapping controls;
-    IshaanFSM fsm;
+@TeleOp(name ="0Final TeleOp", group = "tests")
+public class TeleOpTest extends OpMode {
+    Robot robot;
+    GamepadMapping controls;
+    ServoImplEx stopper;
+    TestFSM fsm;
     private DcMotorEx leftFront, rightFront, leftBack, rightBack;
 
 
     @Override
     public void init() {
         controls = new GamepadMapping(gamepad1, gamepad2);
-        robot    = new Robot(hardwareMap, controls);
-        fsm      = new IshaanFSM(hardwareMap, controls, robot);
+        robot = new Robot(hardwareMap, controls);
+
+        stopper = hardwareMap.get(ServoImplEx.class, "stopper");
+        fsm = new TestFSM(hardwareMap,controls, robot);
 
         leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
@@ -42,6 +46,7 @@ public class TeleOpFinal extends OpMode {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+
     }
 
     @Override
@@ -51,6 +56,12 @@ public class TeleOpFinal extends OpMode {
 
     @Override
     public void loop() {
+        if (!gamepad1.right_bumper) {
+            stopper.setPosition(0.8);
+        } else {
+            stopper.setPosition(1);
+        }
+
         fsm.update();
 
         // Keep limelight fresh every loop
@@ -59,7 +70,7 @@ public class TeleOpFinal extends OpMode {
 
         double forward = -Math.pow(gamepad1.left_stick_y, 3);
         double strafe  = Math.pow(gamepad1.left_stick_x, 3);
-        double rotate  = Math.pow(gamepad1.right_stick_x, 3);
+        double rotate  = Math.pow(gamepad1.right_stick_x*0.92, 3);
 
         if (gamepad1.right_trigger > 0) {
             // FIX: autoAlign() already drives the motors internally (full power, no current limit).
@@ -83,6 +94,7 @@ public class TeleOpFinal extends OpMode {
         }
         telemetry.addData("ol", robot.shooter.outtake1.getVelocity());
         telemetry.addData("or", robot.shooter.outtake2.getVelocity());
+        telemetry.addData("hood pos", robot.shooter.variableHood.getPosition());
 
         telemetry.addData("Control Type", fsm.getControlType());
         telemetry.addData("Switch value", controls.switchMode.value());
@@ -130,5 +142,4 @@ public class TeleOpFinal extends OpMode {
         leftBack  .setPower(lb / max);
         rightBack .setPower(rb / max);
     }
-
 }

@@ -18,7 +18,7 @@ public class FSM {
 
     // --------------- SUBSYSTEMS ---------------
     private final Intake intake;
-    private final Stopper stopper;
+//    private final Stopper stopper;
     private final Shooter shooter;
 
 
@@ -38,7 +38,7 @@ public class FSM {
         this.gamepad = robot.controls;
 
         intake = robot.intake;
-        stopper = robot.stopper;
+//        stopper = robot.stopper;
         shooter = robot.shooter;
 
         savedType = ControlType.PID_CONTROL;
@@ -62,10 +62,10 @@ public class FSM {
                 // Stopper hold
                 if (gamepad.transfer.locked() && type == ControlType.PID_CONTROL) {
                     intake.intakeTransferOnClose();
-                    stopper.release();
+//                    stopper.release();
                     intake.pivotDown();
                 } else {
-                    stopper.stop();
+//                    stopper.stop();
                 }
 
                 // Outtake hold
@@ -155,7 +155,7 @@ public class FSM {
                 shooter.hoodToBack();
                 intake.intakeTransferOnClose();
 
-                stopper.stop();
+//                stopper.stop();
 
                 if (!gamepad.shootBack.locked()) {
                     state = FSMStates.BASE_STATE;
@@ -170,7 +170,7 @@ public class FSM {
                 shooter.shootFromFront();
                 shooter.hoodToFront();
 
-                stopper.stop();
+//                stopper.stop();
 
                 if (!gamepad.shootFront.locked()) {
                     state = FSMStates.BASE_STATE;

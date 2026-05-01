@@ -9,16 +9,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Stopper;
 import org.firstinspires.ftc.teamcode.teleop.gamepad.GamepadMapping;
 
 
-public class IshaanFSM {
+public class TestFSM {
     // --------------- Robot & States ---------------
     public Robot robot;
-    public FSMStates state = FSMStates.BASE_STATE;
+    public TestFSMStates state = TestFSMStates.BASE_STATE;
     public ControlType type = ControlType.PID_CONTROL;
     private final GamepadMapping gamepad;
 
     // --------------- SUBSYSTEMS ---------------
     private final Intake intake;
-    private final Stopper stopper;
     private final Shooter shooter;
 
     // --------------- MISC ---------------
@@ -30,17 +29,16 @@ public class IshaanFSM {
     private boolean lastDpadDown = false;
     private double manualOffset  = 0.0;
 
-    private static final double HOOD_MIN        = 0.36;
-    private static final double HOOD_MAX        = 0.96;
+    private static final double HOOD_MIN        = 0;
+    private static final double HOOD_MAX        = 0.65;
     private static double VELOCITY_CORRECTION = 35;
 
 
-    public IshaanFSM(HardwareMap hardwareMap, GamepadMapping gamepad, Robot robot) {
+    public TestFSM(HardwareMap hardwareMap, GamepadMapping gamepad, Robot robot) {
         this.robot = robot;
         this.gamepad = robot.controls;
 
         intake = robot.intake;
-        stopper = robot.stopper;
         shooter = robot.shooter;
 
         savedType = ControlType.PID_CONTROL;
@@ -53,13 +51,20 @@ public class IshaanFSM {
             case BASE_STATE:
 
                 // Intake toggle
-                if (gamepad.intakeTransfer.locked()) {
+
+                if (gamepad.gamepad2.a) {
+                    intake.intakeTransferOff();
+                    intake.pivotUp();
+                } else if (gamepad.gamepad2.y) {
+                    intake.intakeTransferOnClose();
+                    intake.pivotDown();
+                } else if (gamepad.intakeTransfer.value()) {
                     intake.intakeTransferOnClose();
                     intake.pivotDown();
                 } else if (gamepad.intakeOnly.locked()) {
                     intake.dropdownIntake.setPower(1.0);
                     intake.pivotDown();
-                } else if (!gamepad.transfer.locked()) {
+                } else if (!gamepad.transfer.locked() || (!gamepad.intakeOnly.locked())) {
                     intake.intakeTransferOff();
                     intake.pivotUp();
                 }
@@ -67,15 +72,15 @@ public class IshaanFSM {
                 // Stopper hold (PID mode only)
                 if (gamepad.transfer.locked() && type == ControlType.PID_CONTROL) {
                     intake.intakeTransferOnClose();
-                    stopper.release();
                     intake.pivotDown();
                 } else if (type == ControlType.PID_CONTROL) {
-                    stopper.stop();
+
+
                 }
 
                 // Outtake hold
                 if (gamepad.outtake.locked()) {
-                    state = FSMStates.OUTTAKING;
+                    state = TestFSMStates.OUTTAKING;
                 }
 
                 // --------------- Shared dpad manual offset (both modes) ---------------
@@ -101,11 +106,11 @@ public class IshaanFSM {
                     };
 
                     double[][] hoodPoints = {
-                            {45,  0.92},
-                            {54,  0.94},
-                            {65,  0.96},
-                            {82,  0.96},
-                            {100,  0.96}
+                            {45,  0.56},
+                            {54,  0.57},
+                            {65,  0.59},
+                            {82,  0.59},
+                            {100,  0.59}
 
                     };
 
@@ -153,19 +158,19 @@ public class IshaanFSM {
                 if (type == ControlType.HARDCODED_CONTROL) {
                     double clampedHood = Math.max(HOOD_MIN, Math.min(HOOD_MAX, lastHoodPos + manualOffset));
                     shooter.shootHardcoded();
-                    robot.shooter.setHoodAngle(0.94);
+                    robot.shooter.hoodToBack();
 
                     // Shoot on right bumper hold
                     if (gamepad.gamepad1.right_bumper) {
                         intake.intakeTransferOnClose();
-                        stopper.release();
+                        intake.pivotDown();
                     } else {
-                        stopper.stop();
+                        intake.pivotUp();
                     }
                 }
 
                 if (gamepad.shootBack.locked() && type == ControlType.HARDCODED_CONTROL) {
-                    state = FSMStates.HARDCODED;
+                    state = TestFSMStates.HARDCODED;
                 }
 
                 break;
@@ -174,30 +179,29 @@ public class IshaanFSM {
                 robot.intake.intakeTransferReverse();
 
                 if (!gamepad.outtake.locked()) {
-                    state = FSMStates.BASE_STATE;
+                    state = TestFSMStates.BASE_STATE;
                     gamepad.resetMultipleControls(gamepad.transfer);
                 }
                 break;
 
             case HARDCODED:
                 shooter.shootHardcoded();
-                shooter.setHoodAngle(0.9);
+                shooter.hoodToBack();
                 intake.intakeTransferOnClose();
-                stopper.stop();
 
                 if (!gamepad.shootBack.locked()) {
-                    state = FSMStates.BASE_STATE;
+                    state = TestFSMStates.BASE_STATE;
                     gamepad.resetMultipleControls(gamepad.transfer);
                 }
                 break;
         }
     }
 
-    public void setState(FSMStates newState) {
+    public void setState(TestFSMStates newState) {
         state = newState;
     }
 
-    public FSMStates getState() {
+    public TestFSMStates getState() {
         return state;
     }
 
@@ -209,7 +213,7 @@ public class IshaanFSM {
         return type;
     }
 
-    public enum FSMStates {
+    public enum TestFSMStates {
         BASE_STATE,
         HARDCODED,
         OUTTAKING

@@ -33,7 +33,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @Config
-@Autonomous(name = "Blue 18 Gate + Spam Gate")
+@Autonomous(name = "Move Blue 18 Gate + Spam Gate")
 public class Blue18GateMoveSpam extends NextFTCOpMode {
     public Blue18GateMoveSpam() {
         addComponents(
@@ -183,8 +183,8 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.closeSide(),
-                Stoppernf.INSTANCE.close(),
+                Hoodnf.INSTANCE.farSide(),
+                Stoppernf.INSTANCE.stop(),
                 Intakenf.INSTANCE.pivotDown()
         );
     }
@@ -196,8 +196,8 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
 
                         //Score Preloads
                         new ParallelDeadlineGroup(
-                                f.i.follow(shootPreloads), //if no move on, check to see if open command finishes
-                                Stoppernf.INSTANCE.open()
+                                f.i.follow(shootPreloads), //if no move on, check to see if release command finishes
+                                Stoppernf.INSTANCE.release()
                         ),
                         s.i.shoot(1),
 
@@ -207,12 +207,12 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(grabMiddleSet),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootMiddleSet),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
                                         )
                                 ),
                                 new SequentialGroup(
@@ -227,14 +227,14 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
 
                                         )
                                 ),
@@ -248,14 +248,14 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
 
                                         )
                                 ),
@@ -269,14 +269,14 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
 
                                         )
                                 ),
@@ -290,14 +290,14 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(gateIntake),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         f.i.follow(gateMove1),
                                         new Delay(1.4),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
 
                                         )
                                 ),
@@ -314,12 +314,12 @@ public class Blue18GateMoveSpam extends NextFTCOpMode {
                                 new SequentialGroup(
                                         new ParallelGroup(
                                                 f.i.follow(grabSet2),
-                                                Stoppernf.INSTANCE.close()
+                                                Stoppernf.INSTANCE.stop()
                                         ),
                                         Intakenf.INSTANCE.off(),
                                         new ParallelGroup(
                                                 f.i.follow(shootGate),
-                                                Stoppernf.INSTANCE.open()
+                                                Stoppernf.INSTANCE.release()
                                         )
 
                                 ),

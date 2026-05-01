@@ -68,22 +68,17 @@ public class SubsystemTests extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.setHoodPos(0.96),
-                Stoppernf.INSTANCE.close(),
+                Hoodnf.INSTANCE.closeSide(),
+                Stoppernf.INSTANCE.stop(),
                 Intakenf.INSTANCE.pivotDown()
         );
     }
 
     private Command autonomous() {
-        return new ParallelGroup(
-                BaseShooternf.INSTANCE.setShooterVel(1030),
-                new SequentialGroup(
-                        Intakenf.INSTANCE.in(),
-                        new Delay(2),
-                        s.i.shoot(1),
-                        Intakenf.INSTANCE.off(),
-                        new Delay(15)
-                )
+        return new SequentialGroup(
+
+                Stoppernf.INSTANCE.release(),
+                Hoodnf.INSTANCE.farSide()
 
 
         );

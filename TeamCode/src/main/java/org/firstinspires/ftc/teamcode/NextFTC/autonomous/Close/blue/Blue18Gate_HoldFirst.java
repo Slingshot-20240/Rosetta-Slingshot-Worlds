@@ -146,8 +146,8 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.setHoodPos(0.37),
-                Stoppernf.INSTANCE.close(),
+                Hoodnf.INSTANCE.farSide(),
+                Stoppernf.INSTANCE.stop(),
                 Intakenf.INSTANCE.pivotDown()
         );
     }
@@ -159,8 +159,8 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
 
                     //Score Preloads
                     new ParallelDeadlineGroup(
-                            f.i.follow(shootPreloads), //if no move on, check to see if open command finishes
-                            Stoppernf.INSTANCE.open()
+                            f.i.follow(shootPreloads), //if no move on, check to see if release command finishes
+                            Stoppernf.INSTANCE.release()
                     ),
                     s.i.shoot(1),
 
@@ -170,18 +170,18 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(grabMiddleSet),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
                                     ),
                                     new ParallelGroup(
                                             f.i.follow(gateSet3),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
 
                                     ),
                                     Intakenf.INSTANCE.off(),
                                     new Delay(0.7),
                                     new ParallelGroup(
                                             f.i.follow(shootMiddleSet),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.release()
                                     )
                             ),
                             new SequentialGroup(
@@ -196,13 +196,13 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(gateIntake),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
                                     ),
                                     new Delay(1.4),
                                     Intakenf.INSTANCE.off(),
                                     new ParallelGroup(
                                             f.i.follow(shootGate),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.release()
 
                                     )
                             ),
@@ -216,13 +216,13 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(gateIntake),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
                                     ),
                                     new Delay(1.4),
                                     Intakenf.INSTANCE.off(),
                                     new ParallelGroup(
                                             f.i.follow(shootGate),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.release()
 
                                     )
                             ),
@@ -236,13 +236,13 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(gateIntake),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
                                     ),
                                     new Delay(1.4),
                                     Intakenf.INSTANCE.off(),
                                     new ParallelGroup(
                                             f.i.follow(shootGate),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.release()
 
                                     )
                             ),
@@ -259,12 +259,12 @@ public class Blue18Gate_HoldFirst extends NextFTCOpMode {
                             new SequentialGroup(
                                     new ParallelGroup(
                                             f.i.follow(grabSet2),
-                                            Stoppernf.INSTANCE.close()
+                                            Stoppernf.INSTANCE.stop()
                                     ),
                                     Intakenf.INSTANCE.off(),
                                     new ParallelGroup(
                                             f.i.follow(shootGate),
-                                            Stoppernf.INSTANCE.open()
+                                            Stoppernf.INSTANCE.release()
                                     )
 
                             ),

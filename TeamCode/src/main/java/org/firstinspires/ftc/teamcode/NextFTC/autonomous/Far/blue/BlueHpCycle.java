@@ -120,8 +120,8 @@ public class BlueHpCycle extends NextFTCOpMode {
 
     private Command init_bot() {
         return new ParallelGroup(
-                Hoodnf.INSTANCE.setHoodPos(0.37),
-                Stoppernf.INSTANCE.close(),
+                Hoodnf.INSTANCE.closeSide(),
+                Stoppernf.INSTANCE.stop(),
                 Intakenf.INSTANCE.pivotDown()
         );
     }
@@ -131,7 +131,7 @@ public class BlueHpCycle extends NextFTCOpMode {
                 /*
                 //Score Preloads
                 new ParallelDeadlineGroup(
-                        f.i.follow(shootPreloads, true), //if no move on, check to see if open command finishes
+                        f.i.follow(shootPreloads, true), //if no move on, check to see if release command finishes
                         BaseShooternf.INSTANCE.setShooterVel(1030)
                 ),
                 s.i.shoot(0.7),

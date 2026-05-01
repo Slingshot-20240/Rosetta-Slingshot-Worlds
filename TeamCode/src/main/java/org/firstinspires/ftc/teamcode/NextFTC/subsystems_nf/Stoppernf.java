@@ -1,28 +1,29 @@
 package org.firstinspires.ftc.teamcode.NextFTC.subsystems_nf;
 
+import com.qualcomm.robotcore.hardware.ServoImplEx;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.hardware.impl.ServoEx;
-import dev.nextftc.hardware.positionable.SetPosition;
+import dev.nextftc.ftc.ActiveOpMode;
 
 public class Stoppernf implements Subsystem {
     public static final Stoppernf INSTANCE = new Stoppernf();
     private Stoppernf() {}
 
-    public ServoEx stopper;
+    public ServoImplEx stopper;
 
-    public Command open() {
-        return new SetPosition(stopper,0.53).requires(this);
+    public Command release() {
+        return new InstantCommand(() -> stopper.setPosition(1));
     }
 
-    public Command close() {
-        return new SetPosition(stopper,0.36).requires(this);
+    public Command stop() {
+        return new InstantCommand(() -> stopper.setPosition(0.8));
     }
 
     @Override
     public void initialize() {
-        stopper = new ServoEx("stopper");
+        stopper = ActiveOpMode.hardwareMap().get(ServoImplEx.class, "stopper");
     }
 
     @Override
