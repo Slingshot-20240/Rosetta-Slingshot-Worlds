@@ -358,7 +358,7 @@ public class Red18GateMoveSpam extends NextFTCOpMode {
                     //Gate Cycles
                     //Middle
                     new FollowPath(gateIntake1),
-                    new Delay(0.2),
+                    new Delay(0.06),
                     new FollowPath(gateMove1),
                     new Delay(0.6),
                     new ParallelGroup(
@@ -372,7 +372,7 @@ public class Red18GateMoveSpam extends NextFTCOpMode {
                     ),
 
                     new FollowPath(gateIntake2),
-                    new Delay(0.2),
+                    new Delay(0.06),
                     new FollowPath(gateMove2),
                     new Delay(0.6),
                     new ParallelGroup(
@@ -386,7 +386,7 @@ public class Red18GateMoveSpam extends NextFTCOpMode {
                     ),
 
                     new FollowPath(gateIntake3),
-                    new Delay(0.2),
+                    new Delay(0.06),
                     new FollowPath(gateMove3),
                     new Delay(0.6),
                     new ParallelGroup(
